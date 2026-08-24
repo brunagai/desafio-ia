@@ -1,0 +1,11 @@
+cliente_id,n_sinalizacoes,n_janelas_fracionamento,n_ops_atipicas,volume_brl,ferramentas,nivel_risco,tipologia_suspeita,fallback_parse,provedor,modelo,latencia_s,tokens_total
+CLI-014,3,0,3,80629.99,"historico_cliente,perfil_canal",alto,transferência suspeita,False,groq,openai/gpt-oss-20b,4.11,1067
+CLI-023,2,0,2,148535.02,"historico_cliente,perfil_canal",médio,Transferência de alto valor e uso de múltiplos canais,False,groq,openai/gpt-oss-20b,1.935,1138
+CLI-028,2,0,2,88750.8,"historico_cliente,perfil_canal",médio,Operações atípicas e uso de múltiplos canais,False,groq,openai/gpt-oss-20b,1.813,1065
+CLI-013,2,0,2,81730.99,"historico_cliente,perfil_canal",médio,Transferências e pagamentos com múltiplos canais,False,groq,openai/gpt-oss-20b,2.206,1178
+CLI-005,2,0,2,64742.66,"historico_cliente,perfil_canal",médio,transferências e pagamentos em canais digitais,False,groq,openai/gpt-oss-20b,2.243,1205
+CLI-026,2,0,2,54729.28,"historico_cliente,perfil_canal",médio,Operações atípicas e alta concentração em espécie,False,groq,openai/gpt-oss-20b,1.789,1030
+CLI-001,2,0,2,47947.81,"historico_cliente,perfil_canal",médio,operações atípicas e volume elevado,False,groq,openai/gpt-oss-20b,2.429,1139
+CLI-029,1,1,0,191385.77,operacoes_do_dia,baixo,normal,False,groq,openai/gpt-oss-20b,1.828,972
+CLI-017,1,1,0,121391.37,operacoes_do_dia,médio,indeterminada,True,groq,openai/gpt-oss-20b,1.757,960
+CLI-030,1,0,1,117780.89,"historico_cliente,perfil_canal",baixo,transferências e depósitos comuns,False,groq,openai/gpt-oss-20b,7.33,1116

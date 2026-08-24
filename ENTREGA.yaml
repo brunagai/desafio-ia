@@ -1,0 +1,23 @@
+candidato: Bruna Nagai
+modelo_usado: openai/gpt-oss-20b
+provedor: groq
+horas_dedicadas: 8
+
+nivel_1:
+  limpeza_dados:      {status: completo, onde: "nivel_1/nivel_1.ipynb, células 4–10"}
+  regras_pandas:      {status: completo, onde: "nivel_1/nivel_1.ipynb, célula 16"}
+  validacao_regras:   {status: completo, onde: "nivel_1/nivel_1.ipynb, células 17–18"}
+  saida_estruturada:  {status: completo, onde: "nivel_1/nivel_1.ipynb, célula 24"}
+  comparacao_prompts: {status: completo, onde: "nivel_1/nivel_1.ipynb, células 21–25"}
+
+nivel_2:
+  regras_em_escala: {status: completo, onde: "nivel_2/agente.py, aplicar_regras / top_clientes_sinalizados"}
+  ferramentas:      {status: completo, onde: "nivel_2/tools.py"}
+  agente:           {status: completo, onde: "nivel_2/agente.py"}
+  lote:             {status: completo, onde: "outputs/lote.csv, outputs/lote.json"}
+  confronto:        {status: completo, onde: "nivel_2/confronto.py, outputs/confronto.json"}
+
+nivel_3:
+  trilha_escolhida: A
+  status: nao_feito
+  plano: "docs/DECISOES.md#nivel-3"
