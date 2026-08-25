@@ -16,6 +16,7 @@ nivel_2:
   agente:           {status: completo, onde: "nivel_2/agente.py"}
   lote:             {status: completo, onde: "outputs/lote.csv, outputs/lote.json"}
   confronto:        {status: completo, onde: "nivel_2/confronto.py, outputs/confronto.json"}
+  testes:           {status: completo, onde: "nivel_2/test_regras.py (6 casos: python -m pytest nivel_2/test_regras.py)"}
 
 nivel_3:
   trilha_escolhida: A
