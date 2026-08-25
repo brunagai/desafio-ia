@@ -176,19 +176,51 @@ def _extrair_json(texto: str) -> str:
     return limpo
 
 
-def parse_avaliacao(texto: str) -> tuple[AvaliacaoPLD, bool]:
+CAMPOS_CONTRATO = ("nivel_risco", "tipologia_suspeita", "red_flags", "justificativa")
+
+
+def _reparar(texto: str) -> tuple[AvaliacaoPLD | None, list[str]]:
+    """Tenta salvar o que veio utilizável, sem nunca arbitrar o nível de risco."""
     try:
-        return AvaliacaoPLD.model_validate_json(_extrair_json(texto)), False
-    except Exception as erro:
-        return (
-            AvaliacaoPLD(
-                nivel_risco="médio",
-                tipologia_suspeita="indeterminada",
-                red_flags=["resposta da LLM malformada ou indisponível"],
-                justificativa=f"Fallback ({type(erro).__name__}): {texto[:400]}",
-            ),
-            True,
+        dados = json.loads(_extrair_json(texto))
+    except Exception:
+        return None, list(CAMPOS_CONTRATO)
+    if not isinstance(dados, dict):
+        return None, list(CAMPOS_CONTRATO)
+
+    ausentes = [campo for campo in CAMPOS_CONTRATO if not dados.get(campo)]
+    remendo = dict(dados)
+    if not remendo.get("tipologia_suspeita"):
+        remendo["tipologia_suspeita"] = "não informada pelo modelo"
+    if not isinstance(remendo.get("red_flags"), list):
+        remendo["red_flags"] = []
+    if not remendo.get("justificativa"):
+        remendo["justificativa"] = (
+            "Justificativa não devolvida pelo modelo. Campos ausentes na resposta: "
+            + ", ".join(ausentes)
         )
+    try:
+        # nivel_risco inválido derruba a validação de propósito: risco não se remenda.
+        return AvaliacaoPLD.model_validate(remendo), ausentes
+    except Exception:
+        return None, ausentes
+
+
+def parse_avaliacao(texto: str) -> tuple[AvaliacaoPLD | None, str, list[str]]:
+    """Devolve (parecer, status, campos_ausentes).
+
+    status é `ok` quando a resposta cumpre o contrato, `reparado` quando o nível
+    de risco veio válido e só campos de texto faltaram, e `sem_parecer` quando
+    não há nada aproveitável — aí o cliente vai para revisão humana.
+    """
+    try:
+        return AvaliacaoPLD.model_validate_json(_extrair_json(texto)), "ok", []
+    except Exception:
+        pass
+    parcial, ausentes = _reparar(texto)
+    if parcial is None:
+        return None, "sem_parecer", ausentes
+    return parcial, "reparado", ausentes
 
 
 def _carregar_env() -> None:
@@ -296,11 +328,61 @@ def montar_prompt(sinal: SinalizacaoCliente, evidencias: dict[str, Any]) -> str:
     )
 
 
+def _instrucao_reparo(ausentes: list[str]) -> str:
+    faltando = ", ".join(ausentes) if ausentes else "todas as chaves do contrato"
+    return (
+        "\nSua resposta anterior não cumpriu o contrato: "
+        f"{faltando} ausente(s) ou inválido(s). Responda de novo, JSON puro, com as quatro "
+        "chaves obrigatórias. Não mude a análise, apenas complete o formato."
+    )
+
+
+def _somar_metricas(primeira: dict[str, Any], segunda: dict[str, Any]) -> dict[str, Any]:
+    def soma(chave: str) -> Any:
+        valores = [primeira.get(chave), segunda.get(chave)]
+        numeros = [v for v in valores if isinstance(v, (int, float))]
+        return round(sum(numeros), 3) if numeros else None
+
+    return {
+        "provedor": segunda.get("provedor") or primeira.get("provedor"),
+        "modelo": segunda.get("modelo") or primeira.get("modelo"),
+        "latencia_s": soma("latencia_s"),
+        "tokens_prompt": soma("tokens_prompt"),
+        "tokens_resposta": soma("tokens_resposta"),
+        "tokens_total": soma("tokens_total"),
+    }
+
+
 def analisar_cliente(sinal: SinalizacaoCliente) -> dict[str, Any]:
     chamadas = decidir_ferramentas(sinal)
     evidencias = executar_ferramentas(chamadas)
-    bruto, metricas = chamar_llm(montar_prompt(sinal, evidencias))
-    avaliacao, fallback = parse_avaliacao(bruto)
+    prompt = montar_prompt(sinal, evidencias)
+    bruto, metricas = chamar_llm(prompt)
+    avaliacao, status, ausentes = parse_avaliacao(bruto)
+    tentativas = 1
+
+    if status != "ok":
+        # Uma segunda tentativa citando o campo que faltou: perder um parecer por
+        # erro de formato é pior que gastar mais uma chamada.
+        try:
+            bruto2, metricas2 = chamar_llm(prompt + _instrucao_reparo(ausentes))
+            tentativas = 2
+            metricas = _somar_metricas(metricas, metricas2)
+            avaliacao2, status2, ausentes2 = parse_avaliacao(bruto2)
+            if status2 == "ok" or (avaliacao is None and avaliacao2 is not None):
+                avaliacao, status, ausentes = avaliacao2, status2, ausentes2
+        except Exception as erro:
+            print(f"  {sinal.cliente_id}: retry de formato falhou ({type(erro).__name__}).")
+
+    if avaliacao is None:
+        return registro_de_falha(
+            sinal,
+            ValueError(f"resposta fora do contrato após {tentativas} tentativa(s)"),
+            metricas.get("latencia_s") or 0.0,
+            evidencias["ferramentas_usadas"],
+            metricas,
+        )
+
     return {
         "cliente_id": sinal.cliente_id,
         "n_sinalizacoes": sinal.n_sinalizacoes,
@@ -309,8 +391,10 @@ def analisar_cliente(sinal: SinalizacaoCliente) -> dict[str, Any]:
         "volume_brl": sinal.volume_brl,
         "ferramentas_usadas": evidencias["ferramentas_usadas"],
         "parecer": avaliacao.model_dump(),
-        "fallback_parse": fallback,
-        "status": "ok",
+        "fallback_parse": status != "ok",
+        "status": status,
+        "campos_reparados": ausentes if status == "reparado" else [],
+        "tentativas": tentativas,
         "erro": None,
         "metricas": metricas,
     }
@@ -320,6 +404,8 @@ def registro_de_falha(
     sinal: SinalizacaoCliente,
     erro: BaseException,
     latencia_s: float,
+    ferramentas_usadas: list[dict[str, Any]] | None = None,
+    metricas: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Registro seguro para cliente que não pôde ser avaliado.
 
@@ -327,10 +413,13 @@ def registro_de_falha(
     enunciado (baixo/médio/alto) vale para pareceres de verdade, e cliente sem
     parecer vai para revisão humana em vez de entrar como avaliado no confronto.
     """
-    try:
-        ferramentas = [{"nome": nome, **kwargs} for nome, kwargs in decidir_ferramentas(sinal)]
-    except Exception:
-        ferramentas = []
+    if ferramentas_usadas is None:
+        try:
+            ferramentas = [{"nome": nome, **kwargs} for nome, kwargs in decidir_ferramentas(sinal)]
+        except Exception:
+            ferramentas = []
+    else:
+        ferramentas = ferramentas_usadas
     detalhe = f"{type(erro).__name__}: {erro}"[:300]
     return {
         "cliente_id": sinal.cliente_id,
@@ -342,8 +431,11 @@ def registro_de_falha(
         "parecer": None,
         "fallback_parse": True,
         "status": "erro",
+        "campos_reparados": [],
+        "tentativas": 0 if metricas is None else 2,
         "erro": detalhe,
-        "metricas": {
+        "metricas": metricas
+        or {
             "provedor": None,
             "modelo": None,
             "latencia_s": latencia_s,
@@ -390,6 +482,7 @@ def executar_lote(n: int = TOP_N) -> pd.DataFrame:
                 "tipologia_suspeita": parecer.get("tipologia_suspeita", ""),
                 "fallback_parse": item["fallback_parse"],
                 "status": item.get("status", "ok"),
+                "tentativas": item.get("tentativas", 1),
                 "provedor": metricas.get("provedor"),
                 "modelo": metricas.get("modelo"),
                 "latencia_s": metricas.get("latencia_s"),
