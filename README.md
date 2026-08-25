@@ -19,6 +19,5 @@ cp .env.example .env   # GOOGLE_API_KEY e/ou GROQ_API_KEY; não commitar
 
 - Nível 1: abrir `nivel_1/nivel_1.ipynb` (saídas já commitadas).
 - Nível 2: `python nivel_2/agente.py` e `python nivel_2/confronto.py` (lote e confronto já estão em `outputs/`).
-- Testes: `python -m pytest nivel_2/test_regras.py` — 6 casos sobre as regras determinísticas, sem chamada de LLM.
 
 A avaliação não depende de rerodar. LLM: Groq `openai/gpt-oss-20b` se o Gemini falhar.
