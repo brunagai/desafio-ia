@@ -30,6 +30,8 @@ MIN_OPS_ATIPICO = 4
 TOP_N = 10
 
 NivelRisco = Literal["baixo", "médio", "alto"]
+# Fora do contrato da LLM de propósito: só o pipeline emite este rótulo, quando não há parecer.
+RISCO_INDETERMINADO = "indeterminado"
 DIR_RAIZ = Path(__file__).resolve().parent.parent
 DIR_OUTPUTS = DIR_RAIZ / "outputs"
 
@@ -225,13 +227,23 @@ def chamar_llm(prompt: str) -> tuple[str, dict[str, Any]]:
             print(f"Gemini indisponível ({type(erro).__name__}); tentando Groq.")
 
     if groq_key:
-        from groq import Groq
+        try:
+            from groq import Groq
+        except ImportError as erro:
+            raise RuntimeError(
+                "Pacote groq ausente; instale com pip install -r requirements.txt."
+            ) from erro
 
         modelos = [
             os.getenv("GROQ_MODEL") or "openai/gpt-oss-20b",
             "openai/gpt-oss-20b",
         ]
-        cliente = Groq(api_key=groq_key)
+        try:
+            cliente = Groq(api_key=groq_key)
+        except Exception as erro:
+            raise RuntimeError(
+                f"Não foi possível criar o cliente Groq ({type(erro).__name__})."
+            ) from erro
         ultimo: Exception | None = None
         for modelo in dict.fromkeys(modelos):
             try:
@@ -300,17 +312,76 @@ def analisar_cliente(sinal: SinalizacaoCliente) -> dict[str, Any]:
         "ferramentas_usadas": evidencias["ferramentas_usadas"],
         "parecer": avaliacao.model_dump(),
         "fallback_parse": fallback,
+        "status": "ok",
+        "erro": None,
         "metricas": metricas,
+    }
+
+
+def registro_de_falha(
+    sinal: SinalizacaoCliente,
+    erro: BaseException,
+    latencia_s: float,
+) -> dict[str, Any]:
+    """Registro seguro para cliente que não pôde ser avaliado.
+
+    Não atribui nível de risco: um cliente sem parecer entra na fila de revisão
+    humana, e não como `médio` — que passaria por avaliação concluída no confronto.
+    """
+    try:
+        ferramentas = [{"nome": nome, **kwargs} for nome, kwargs in decidir_ferramentas(sinal)]
+    except Exception:
+        ferramentas = []
+    detalhe = f"{type(erro).__name__}: {erro}"[:300]
+    return {
+        "cliente_id": sinal.cliente_id,
+        "n_sinalizacoes": sinal.n_sinalizacoes,
+        "n_janelas_fracionamento": sinal.n_janelas_fracionamento,
+        "n_ops_atipicas": sinal.n_ops_atipicas,
+        "volume_brl": sinal.volume_brl,
+        "ferramentas_usadas": ferramentas,
+        "parecer": {
+            "nivel_risco": RISCO_INDETERMINADO,
+            "tipologia_suspeita": "indeterminada",
+            "red_flags": [f"análise não concluída ({type(erro).__name__})"],
+            "justificativa": (
+                f"Cliente não avaliado pelo agente — {detalhe}. "
+                "As flags determinísticas permanecem válidas; requer reprocessamento "
+                "ou revisão humana."
+            ),
+        },
+        "fallback_parse": True,
+        "status": "erro",
+        "erro": detalhe,
+        "metricas": {
+            "provedor": None,
+            "modelo": None,
+            "latencia_s": latencia_s,
+            "tokens_prompt": 0,
+            "tokens_resposta": 0,
+            "tokens_total": 0,
+        },
     }
 
 
 def executar_lote(n: int = TOP_N) -> pd.DataFrame:
     DIR_OUTPUTS.mkdir(parents=True, exist_ok=True)
     top = top_clientes_sinalizados(n)
-    registros = [analisar_cliente(sinal) for sinal in top]
-
     caminho_json = DIR_OUTPUTS / "lote.json"
-    caminho_json.write_text(json.dumps(registros, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    registros: list[dict[str, Any]] = []
+    for sinal in top:
+        inicio = time.perf_counter()
+        try:
+            registros.append(analisar_cliente(sinal))
+        except Exception as erro:
+            registro = registro_de_falha(sinal, erro, round(time.perf_counter() - inicio, 3))
+            registros.append(registro)
+            print(f"[erro] {sinal.cliente_id}: {registro['erro']} — seguindo para o próximo.")
+        # Grava a cada cliente: uma falha no fim do lote não descarta o que já rodou.
+        caminho_json.write_text(
+            json.dumps(registros, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
 
     linhas = []
     for item in registros:
@@ -328,6 +399,7 @@ def executar_lote(n: int = TOP_N) -> pd.DataFrame:
                 "nivel_risco": parecer["nivel_risco"],
                 "tipologia_suspeita": parecer["tipologia_suspeita"],
                 "fallback_parse": item["fallback_parse"],
+                "status": item.get("status", "ok"),
                 "provedor": metricas.get("provedor"),
                 "modelo": metricas.get("modelo"),
                 "latencia_s": metricas.get("latencia_s"),
@@ -340,13 +412,21 @@ def executar_lote(n: int = TOP_N) -> pd.DataFrame:
     print("Top clientes sinalizados e pareceres:")
     print(df.to_string(index=False))
     print()
+    falhas = [item for item in registros if item.get("status") == "erro"]
+    avaliados = df.loc[df["status"] == "ok"]
+
     print("Totais de lote:")
-    print(f"  clientes: {len(df)}")
+    print(f"  clientes: {len(df)} (avaliados: {len(avaliados)}, com erro: {len(falhas)})")
     print(f"  latência soma (s): {df['latencia_s'].sum():.3f}")
     print(f"  latência média (s): {df['latencia_s'].mean():.3f}")
     print(f"  tokens soma: {int(df['tokens_total'].sum())}")
     print(f"  tokens média: {df['tokens_total'].mean():.1f}")
     print(f"  arquivos: {caminho_json} e {DIR_OUTPUTS / 'lote.csv'}")
+    if falhas:
+        print()
+        print("Clientes sem parecer (revisão humana):")
+        for item in falhas:
+            print(f"  {item['cliente_id']}: {item['erro']}")
     return df
 
 
