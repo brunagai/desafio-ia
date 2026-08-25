@@ -4,20 +4,20 @@
   "n_clientes": 10,
   "n_avaliados": 10,
   "n_nao_avaliados": 0,
-  "n_concordantes": 6,
-  "n_divergentes": 4,
-  "taxa_concordancia": 0.6,
+  "n_concordantes": 9,
+  "n_divergentes": 1,
+  "taxa_concordancia": 0.9,
   "sensibilidade_ao_criterio": {
     "tipologia": {
-      "taxa": 0.6,
+      "taxa": 0.9,
       "baseline_constante": {
         "rotulo": "médio",
         "taxa": 0.8
       },
-      "supera_baseline": false
+      "supera_baseline": true
     },
     "enunciado": {
-      "taxa": 0.7,
+      "taxa": 0.9,
       "baseline_constante": {
         "rotulo": "médio",
         "taxa": 1.0
@@ -34,13 +34,13 @@
       "volume_brl": 80629.99,
       "risco_esperado": "médio",
       "risco_esperado_criterio_enunciado": "médio",
-      "risco_agente": "alto",
-      "concordante": false,
+      "risco_agente": "médio",
+      "concordante": true,
       "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "transferência suspeita",
-      "justificativa_agente": "O cliente CLI-014 realizou 11 operações com volume total de R$80.629,99, incluindo transferências recebidas e enviadas, pagamentos, saques e depósitos. A presença de operações atípicas (OP-00133, OP-00129, OP-00315) e a distribuição de canais (pix, boleto, TED, cartão) indicam comportamento que pode ser considerado suspeito. Esses elementos justificam a classificação de risco alto.",
-      "leitura_divergencia": "CLI-014: só há flag de valor atípico (5× mediana), sem janela de fracionamento. O agente endureceu para alto. Pode ser razoável se o parecer cita volume e canais, mas a regra sozinha não justificava 'alto' no nosso critério — típico de FP da mediana."
+      "tipologia_suspeita": "Operações atípicas e diversificação de canais",
+      "justificativa_agente": "O cliente CLI-014 apresenta 11 operações com volume total de R$80.629,99, incluindo 3 operações de pagamento, 3 de transferência recebida, 1 de transferência enviada, 3 saques e 1 depósito. Há 3 operações atípicas identificadas (OP-00133, OP-00129, OP-00315). A distribuição de canais mostra uso equilibrado de pix e TED (36,36% cada), boleto (18,18%) e cartão (9,09%). Esses elementos indicam um padrão de transações diversificado e a presença de operações atípicas, sugerindo risco médio de lavagem de dinheiro ou financiamento do terrorismo. ",
+      "leitura_divergencia": "concordante"
     },
     {
       "cliente_id": "CLI-023",
@@ -54,8 +54,8 @@
       "concordante": true,
       "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "Transferência de alto valor e uso de múltiplos canais",
-      "justificativa_agente": "Com base no histórico de 12 operações, volume total de R$148.535,02, incluindo uma transferência enviada de R$65.417,17, e a distribuição de canais com 41,67% TED, 33,33% boleto, 16,67% cartão, 8,33% espécie, a atividade apresenta características de risco médio.",
+      "tipologia_suspeita": "transferência e pagamento de alto valor",
+      "justificativa_agente": "O cliente CLI-023 realizou 12 operações com volume total de R$148.535,02, incluindo uma operação de R$65.417,17. Há presença de operações atípicas identificadas (OP-00219, OP-00317) e uso de múltiplos canais (TED, boleto, cartão). Esses elementos sugerem potencial atividade suspeita, mas não ultrapassam limites de alerta automático. Portanto, risco médio.",
       "leitura_divergencia": "concordante"
     },
     {
@@ -70,8 +70,8 @@
       "concordante": true,
       "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "Operações atípicas e uso de múltiplos canais",
-      "justificativa_agente": "O cliente CLI-028 realizou 12 operações com volume total de R$ 88.750,80, incluindo saque, transferências, depósitos e pagamentos. A distribuição de canais mostra uso de pix, cartão, TED e boleto, indicando diversidade de meios. Foram identificadas duas operações atípicas (OP-00308, OP-00307). Embora o volume não ultrapasse limites críticos, a combinação de operações atípicas, diversidade de canais e volume relativamente alto justifica um nível de risco médio.",
+      "tipologia_suspeita": "Operações atípicas e uso de múltiplos canais de pagamento",
+      "justificativa_agente": "O cliente CLI-028 realizou 12 operações com volume total de R$ 88.750,80, incluindo 4 transferências enviadas, 3 depósitos, 3 pagamentos, 1 saque e 1 transferência recebida. Os canais utilizados foram PIX (2), cartão (4), TED (5) e boleto (1), com 41,67% de TED, indicando diversificação de canais. As operações atípicas OP-00308 e OP-00307 foram detectadas. Esses elementos sugerem um perfil de risco médio.",
       "leitura_divergencia": "concordante"
     },
     {
@@ -86,8 +86,8 @@
       "concordante": true,
       "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "Transferências e pagamentos com múltiplos canais",
-      "justificativa_agente": "O cliente realizou 10 operações com volume total de R$81.730,99, incluindo transferências enviadas, saques, depósitos, pagamento e transferência recebida. A maior operação foi de R$28.487,76, indicando transações de valor elevado. A distribuição de canais mostra 30% TED e 40% PIX, indicando preferência por transferências eletrônicas rápidas. A presença de operações atípicas (OP-00310, OP-00309) reforça a necessidade de monitoramento. Esses fatores combinados indicam risco médio.",
+      "tipologia_suspeita": "transferência",
+      "justificativa_agente": "O cliente CLI-013 realizou 10 operações, com volume total de R$81.730,99 e presença de 2 transferências enviadas e 1 recebida. Há 3 TEDs, 4 PIXs, 1 cartão, 1 boleto e 1 espécie, indicando uso de múltiplos canais. Operações atípicas (OP-00310, OP-00309) foram identificadas. Esses fatores sugerem risco médio de lavagem de dinheiro.",
       "leitura_divergencia": "concordante"
     },
     {
@@ -102,8 +102,8 @@
       "concordante": true,
       "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "transferências e pagamentos em canais digitais",
-      "justificativa_agente": "O cliente realizou 11 operações, com volume total de 64.742,66 BRL, incluindo uma operação de 30.743,97 BRL. A distribuição de canais mostra 27% TED e 27% PIX, indicando uso frequente de transferências digitais. Além disso, foram identificadas operações atípicas (OP-00049, OP-00043). Esses elementos sugerem um risco médio de lavagem de dinheiro.",
+      "tipologia_suspeita": "Transações de alto valor e múltiplos canais de pagamento",
+      "justificativa_agente": "O cliente CLI-005 realizou 11 operações no período analisado, totalizando R$64.742,66, com uma transação de R$30.743,97 que representa um valor significativo em relação ao volume total. A distribuição dos canais inclui TED, PIX, cartão e espécie, indicando diversidade de meios de pagamento. Além disso, foram identificadas operações atípicas (OP-00049 e OP-00043) que podem indicar comportamento fora do padrão. Esses elementos sugerem um risco médio de lavagem de dinheiro, exigindo monitoramento adicional.",
       "leitura_divergencia": "concordante"
     },
     {
@@ -118,8 +118,8 @@
       "concordante": true,
       "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "Operações atípicas e alta concentração em espécie",
-      "justificativa_agente": "O cliente CLI-026 realizou 12 operações com volume total de R$54.729,28, onde 41,67% das transações foram em espécie, o que pode indicar tentativas de lavagem de dinheiro. Além disso, foram identificadas duas operações atípicas (OP-00253 e OP-00247) que não se enquadram nos padrões habituais de movimentação do cliente. Esses fatores combinados sugerem um risco médio de lavagem de dinheiro.",
+      "tipologia_suspeita": "transferência enviada",
+      "justificativa_agente": "O cliente CLI-026 realizou 12 operações com volume total de R$54.729,28, predominando transferências enviadas (3) e saques (2). A maior parte das transações (41,67%) ocorreu por meio de espécie, o que pode indicar tentativas de movimentação em espécie. Além disso, foram identificadas duas operações atípicas (OP-00253 e OP-00247). Esses elementos sugerem um risco moderado de lavagem de dinheiro, justificando a classificação de risco médio.",
       "leitura_divergencia": "concordante"
     },
     {
@@ -134,8 +134,8 @@
       "concordante": true,
       "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "operações atípicas e volume elevado",
-      "justificativa_agente": "O cliente CLI-001 realizou 10 operações no total, com volume de R$47.947,81, sendo o maior valor de R$25.110,15. A distribuição de canais mostra 40% TED, 30% cartão, 10% boleto e 10% pix, indicando uso diversificado. As operações atípicas OP-00008 e OP-00006 foram identificadas. Esses fatores indicam risco médio.",
+      "tipologia_suspeita": "transações de alto valor e múltiplos canais",
+      "justificativa_agente": "O cliente realizou 10 operações com volume total de R$47.947,81, incluindo uma transferência enviada de R$25.110,15, que representa um valor significativo. A distribuição de canais mostra 40% TED e 30% cartão, indicando uso de múltiplos meios. Além disso, foram identificadas operações atípicas (OP-00008, OP-00006). Esses fatores combinados geram um risco médio.",
       "leitura_divergencia": "concordante"
     },
     {
@@ -146,13 +146,13 @@
       "volume_brl": 191385.77,
       "risco_esperado": "alto",
       "risco_esperado_criterio_enunciado": "médio",
-      "risco_agente": "baixo",
+      "risco_agente": "médio",
       "concordante": false,
       "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "normal",
-      "justificativa_agente": "Todas as operações do cliente CLI-029 no dia 2026-05-26 foram realizadas via canais TED e PIX, com valores dentro de faixas típicas de movimentação bancária. Não há indícios de fraudes, lavagem de dinheiro ou outras atividades ilícitas. As operações não excedem limites de valor ou frequência que caracterizem risco elevado, e não há observações ou notas que sugiram irregularidades. Portanto, o nível de risco é classificado como baixo e a tipologia suspeita como normal.",
-      "leitura_divergencia": "CLI-029: a regra marcou fracionamento e o agente baixou o risco. Aqui a regra tende a estar mais certa — smurfing é exatamente o que ela captura. O modelo pode ter lido só o recorte do dia como 'rotina' e subestimado o padrão."
+      "tipologia_suspeita": "transações de alto valor em curto prazo",
+      "justificativa_agente": "O cliente realizou, em 26/05/2026, um saque de R$19.418,96 e um depósito de R$19.138,59, além de outras transações de valor considerável (R$14.326,29 e R$18.413,84). A ocorrência de valores próximos em operações de saque e depósito no mesmo dia pode indicar tentativa de mascarar origem de recursos ou movimentação de fundos de forma rápida, caracterizando um padrão de risco médio. O histórico do cliente mostra 16 operações com volume total de R$191.385,77, o que reforça a relevância das transações recentes. Sem evidências adicionais de limites ou comparações, a avaliação permanece em risco médio. ",
+      "leitura_divergencia": "CLI-029: esperado alto, agente médio. Revisar o parecer: a regra é burra de propósito; o modelo só ganha se a justificativa usar evidência das ferramentas, não se só inverter o rótulo."
     },
     {
       "cliente_id": "CLI-017",
@@ -162,13 +162,13 @@
       "volume_brl": 121391.37,
       "risco_esperado": "alto",
       "risco_esperado_criterio_enunciado": "médio",
-      "risco_agente": "médio",
-      "concordante": false,
-      "fallback_parse": true,
+      "risco_agente": "alto",
+      "concordante": true,
+      "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "indeterminada",
-      "justificativa_agente": "Fallback (ValidationError): {\"nivel_risco\":\"alto\",\"tipologia_suspeita\":\"Operações de alto valor em curto prazo e múltiplos canais\",\"red_flags\":[\"Quatro transações de valor superior a 10.000 BRL em um único dia\",\"Transação de saque via TED e depósito via TED no mesmo dia\",\"Transferência enviada via PIX e pagamento via PIX no mesmo dia\",\"Diversas contrapartes distintas em operações de alto valor\"]}",
-      "leitura_divergencia": "CLI-017: o JSON do agente falhou o contrato. A discordância não é julgamento de PLD — é falha de formato, e a regra permanece a única âncora confiável neste caso."
+      "tipologia_suspeita": "transações de alto valor",
+      "justificativa_agente": "O cliente CLI-017 realizou quatro operações no dia 2026-03-08, cada uma com valor superior a R$15.000,00, incluindo um depósito de R$18.761,22, um pagamento de R$16.158,41 e uma transferência enviada de R$15.401,27. Essas transações de valor elevado em um único dia, sem evidências de justificativa documental ou padrão de comportamento habitual, configuram um risco elevado de lavagem de dinheiro. O histórico do cliente mostra 13 operações no total, mas a concentração de valores altos em um único dia aumenta a suspeita. Portanto, o nível de risco é classificado como alto.",
+      "leitura_divergencia": "concordante"
     },
     {
       "cliente_id": "CLI-030",
@@ -178,32 +178,16 @@
       "volume_brl": 117780.89,
       "risco_esperado": "médio",
       "risco_esperado_criterio_enunciado": "médio",
-      "risco_agente": "baixo",
-      "concordante": false,
+      "risco_agente": "médio",
+      "concordante": true,
       "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "transferências e depósitos comuns",
-      "justificativa_agente": "O cliente possui 9 operações com volume total de R$117.780,89, distribuídas entre transferências recebidas, pagamentos, transferências enviadas, saques e depósitos. A composição de canais (TED, PIX, boleto, cartão, espécie) está equilibrada, sem concentração em um único canal. Não há evidências de operações de alto valor ou de volume anormal. A única operação atípica identificada (OP-00313) não indica padrão de lavagem. Assim, o risco é considerado baixo.",
-      "leitura_divergencia": "CLI-030: a regra 2 acusou outlier e o agente suavizou. Se o parecer descreve operação pontual sem estruturação, o agente está ponderando o falso positivo da mediana; se ignora o outlier, o modelo é que ficou frouxo."
+      "tipologia_suspeita": "Operação atípica e uso de múltiplos canais",
+      "justificativa_agente": "O cliente realizou 9 operações com volume total de 117.780,89 BRL, distribuídas entre transferência recebida, pagamento, transferência enviada, saque e depósito. A presença de uma operação atípica (OP-00313) e a utilização de diversos canais (TED, PIX, Boleto, Cartão, Espécie) indicam comportamento não padrão. Embora o volume não ultrapasse limites típicos de alto risco, a combinação de fatores sugere risco médio.",
+      "leitura_divergencia": "concordante"
     }
   ],
   "divergencias": [
-    {
-      "cliente_id": "CLI-014",
-      "n_sinalizacoes": 3,
-      "n_janelas_fracionamento": 0,
-      "n_ops_atipicas": 3,
-      "volume_brl": 80629.99,
-      "risco_esperado": "médio",
-      "risco_esperado_criterio_enunciado": "médio",
-      "risco_agente": "alto",
-      "concordante": false,
-      "fallback_parse": false,
-      "status": "ok",
-      "tipologia_suspeita": "transferência suspeita",
-      "justificativa_agente": "O cliente CLI-014 realizou 11 operações com volume total de R$80.629,99, incluindo transferências recebidas e enviadas, pagamentos, saques e depósitos. A presença de operações atípicas (OP-00133, OP-00129, OP-00315) e a distribuição de canais (pix, boleto, TED, cartão) indicam comportamento que pode ser considerado suspeito. Esses elementos justificam a classificação de risco alto.",
-      "leitura_divergencia": "CLI-014: só há flag de valor atípico (5× mediana), sem janela de fracionamento. O agente endureceu para alto. Pode ser razoável se o parecer cita volume e canais, mas a regra sozinha não justificava 'alto' no nosso critério — típico de FP da mediana."
-    },
     {
       "cliente_id": "CLI-029",
       "n_sinalizacoes": 1,
@@ -212,47 +196,15 @@
       "volume_brl": 191385.77,
       "risco_esperado": "alto",
       "risco_esperado_criterio_enunciado": "médio",
-      "risco_agente": "baixo",
-      "concordante": false,
-      "fallback_parse": false,
-      "status": "ok",
-      "tipologia_suspeita": "normal",
-      "justificativa_agente": "Todas as operações do cliente CLI-029 no dia 2026-05-26 foram realizadas via canais TED e PIX, com valores dentro de faixas típicas de movimentação bancária. Não há indícios de fraudes, lavagem de dinheiro ou outras atividades ilícitas. As operações não excedem limites de valor ou frequência que caracterizem risco elevado, e não há observações ou notas que sugiram irregularidades. Portanto, o nível de risco é classificado como baixo e a tipologia suspeita como normal.",
-      "leitura_divergencia": "CLI-029: a regra marcou fracionamento e o agente baixou o risco. Aqui a regra tende a estar mais certa — smurfing é exatamente o que ela captura. O modelo pode ter lido só o recorte do dia como 'rotina' e subestimado o padrão."
-    },
-    {
-      "cliente_id": "CLI-017",
-      "n_sinalizacoes": 1,
-      "n_janelas_fracionamento": 1,
-      "n_ops_atipicas": 0,
-      "volume_brl": 121391.37,
-      "risco_esperado": "alto",
-      "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": false,
-      "fallback_parse": true,
-      "status": "ok",
-      "tipologia_suspeita": "indeterminada",
-      "justificativa_agente": "Fallback (ValidationError): {\"nivel_risco\":\"alto\",\"tipologia_suspeita\":\"Operações de alto valor em curto prazo e múltiplos canais\",\"red_flags\":[\"Quatro transações de valor superior a 10.000 BRL em um único dia\",\"Transação de saque via TED e depósito via TED no mesmo dia\",\"Transferência enviada via PIX e pagamento via PIX no mesmo dia\",\"Diversas contrapartes distintas em operações de alto valor\"]}",
-      "leitura_divergencia": "CLI-017: o JSON do agente falhou o contrato. A discordância não é julgamento de PLD — é falha de formato, e a regra permanece a única âncora confiável neste caso."
-    },
-    {
-      "cliente_id": "CLI-030",
-      "n_sinalizacoes": 1,
-      "n_janelas_fracionamento": 0,
-      "n_ops_atipicas": 1,
-      "volume_brl": 117780.89,
-      "risco_esperado": "médio",
-      "risco_esperado_criterio_enunciado": "médio",
-      "risco_agente": "baixo",
-      "concordante": false,
       "fallback_parse": false,
       "status": "ok",
-      "tipologia_suspeita": "transferências e depósitos comuns",
-      "justificativa_agente": "O cliente possui 9 operações com volume total de R$117.780,89, distribuídas entre transferências recebidas, pagamentos, transferências enviadas, saques e depósitos. A composição de canais (TED, PIX, boleto, cartão, espécie) está equilibrada, sem concentração em um único canal. Não há evidências de operações de alto valor ou de volume anormal. A única operação atípica identificada (OP-00313) não indica padrão de lavagem. Assim, o risco é considerado baixo.",
-      "leitura_divergencia": "CLI-030: a regra 2 acusou outlier e o agente suavizou. Se o parecer descreve operação pontual sem estruturação, o agente está ponderando o falso positivo da mediana; se ignora o outlier, o modelo é que ficou frouxo."
+      "tipologia_suspeita": "transações de alto valor em curto prazo",
+      "justificativa_agente": "O cliente realizou, em 26/05/2026, um saque de R$19.418,96 e um depósito de R$19.138,59, além de outras transações de valor considerável (R$14.326,29 e R$18.413,84). A ocorrência de valores próximos em operações de saque e depósito no mesmo dia pode indicar tentativa de mascarar origem de recursos ou movimentação de fundos de forma rápida, caracterizando um padrão de risco médio. O histórico do cliente mostra 16 operações com volume total de R$191.385,77, o que reforça a relevância das transações recentes. Sem evidências adicionais de limites ou comparações, a avaliação permanece em risco médio. ",
+      "leitura_divergencia": "CLI-029: esperado alto, agente médio. Revisar o parecer: a regra é burra de propósito; o modelo só ganha se a justificativa usar evidência das ferramentas, não se só inverter o rótulo."
     }
   ],
   "nao_avaliados": [],
-  "sintese": "Concordância 6/10 (60%) pelo critério de tipologia. Um agente que respondesse sempre 'médio' faria 80%, então a taxa sozinha não prova julgamento — a leitura das divergências é que vale. As regras são propositalmente pobres: um agente que discorda com evidência das ferramentas pode estar certo."
+  "sintese": "Concordância 9/10 (90%) pelo critério de tipologia. Um agente que respondesse sempre 'médio' faria 80%, então a taxa sozinha não prova julgamento — a leitura das divergências é que vale. As regras são propositalmente pobres: um agente que discorda com evidência das ferramentas pode estar certo."
 }

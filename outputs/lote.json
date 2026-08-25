@@ -16,24 +16,27 @@
       }
     ],
     "parecer": {
-      "nivel_risco": "alto",
-      "tipologia_suspeita": "transferência suspeita",
+      "nivel_risco": "médio",
+      "tipologia_suspeita": "Operações atípicas e diversificação de canais",
       "red_flags": [
-        "operações atípicas presentes",
-        "volume elevado",
-        "variedade de canais",
-        "transações de transferência recebida e enviada"
+        "Operações atípicas (OP-00133, OP-00129, OP-00315)",
+        "Volume de transações elevado (R$80.629,99 em 11 operações)",
+        "Diversificação de canais de pagamento (pix 36,36%, boleto 18,18%, TED 36,36%, cartão 9,09%)"
       ],
-      "justificativa": "O cliente CLI-014 realizou 11 operações com volume total de R$80.629,99, incluindo transferências recebidas e enviadas, pagamentos, saques e depósitos. A presença de operações atípicas (OP-00133, OP-00129, OP-00315) e a distribuição de canais (pix, boleto, TED, cartão) indicam comportamento que pode ser considerado suspeito. Esses elementos justificam a classificação de risco alto."
+      "justificativa": "O cliente CLI-014 apresenta 11 operações com volume total de R$80.629,99, incluindo 3 operações de pagamento, 3 de transferência recebida, 1 de transferência enviada, 3 saques e 1 depósito. Há 3 operações atípicas identificadas (OP-00133, OP-00129, OP-00315). A distribuição de canais mostra uso equilibrado de pix e TED (36,36% cada), boleto (18,18%) e cartão (9,09%). Esses elementos indicam um padrão de transações diversificado e a presença de operações atípicas, sugerindo risco médio de lavagem de dinheiro ou financiamento do terrorismo. "
     },
     "fallback_parse": false,
+    "status": "ok",
+    "campos_reparados": [],
+    "tentativas": 1,
+    "erro": null,
     "metricas": {
       "provedor": "groq",
       "modelo": "openai/gpt-oss-20b",
-      "latencia_s": 4.11,
+      "latencia_s": 1.884,
       "tokens_prompt": 536,
-      "tokens_resposta": 531,
-      "tokens_total": 1067
+      "tokens_resposta": 579,
+      "tokens_total": 1115
     }
   },
   {
@@ -54,21 +57,27 @@
     ],
     "parecer": {
       "nivel_risco": "médio",
-      "tipologia_suspeita": "Transferência de alto valor e uso de múltiplos canais",
+      "tipologia_suspeita": "transferência e pagamento de alto valor",
       "red_flags": [
-        "Transferência enviada de R$65.417,17",
-        "Distribuição de canais: 41,67% TED, 33,33% boleto, 16,67% cartão, 8,33% espécie"
+        "operações atípicas (OP-00219, OP-00317)",
+        "volume total de R$148.535,02 em 12 operações",
+        "variedade de canais (TED, boleto, cartão)",
+        "maior valor de R$65.417,17 em uma única operação"
       ],
-      "justificativa": "Com base no histórico de 12 operações, volume total de R$148.535,02, incluindo uma transferência enviada de R$65.417,17, e a distribuição de canais com 41,67% TED, 33,33% boleto, 16,67% cartão, 8,33% espécie, a atividade apresenta características de risco médio."
+      "justificativa": "O cliente CLI-023 realizou 12 operações com volume total de R$148.535,02, incluindo uma operação de R$65.417,17. Há presença de operações atípicas identificadas (OP-00219, OP-00317) e uso de múltiplos canais (TED, boleto, cartão). Esses elementos sugerem potencial atividade suspeita, mas não ultrapassam limites de alerta automático. Portanto, risco médio."
     },
     "fallback_parse": false,
+    "status": "ok",
+    "campos_reparados": [],
+    "tentativas": 1,
+    "erro": null,
     "metricas": {
       "provedor": "groq",
       "modelo": "openai/gpt-oss-20b",
-      "latencia_s": 1.935,
+      "latencia_s": 1.834,
       "tokens_prompt": 535,
-      "tokens_resposta": 603,
-      "tokens_total": 1138
+      "tokens_resposta": 816,
+      "tokens_total": 1351
     }
   },
   {
@@ -89,22 +98,26 @@
     ],
     "parecer": {
       "nivel_risco": "médio",
-      "tipologia_suspeita": "Operações atípicas e uso de múltiplos canais",
+      "tipologia_suspeita": "Operações atípicas e uso de múltiplos canais de pagamento",
       "red_flags": [
-        "Operações atípicas (OP-00308, OP-00307)",
-        "Uso de múltiplos canais (pix, cartao, ted, boleto)",
+        "Operações atípicas identificadas",
+        "Uso de múltiplos canais de pagamento",
         "Volume de transações acima de 80k"
       ],
-      "justificativa": "O cliente CLI-028 realizou 12 operações com volume total de R$ 88.750,80, incluindo saque, transferências, depósitos e pagamentos. A distribuição de canais mostra uso de pix, cartão, TED e boleto, indicando diversidade de meios. Foram identificadas duas operações atípicas (OP-00308, OP-00307). Embora o volume não ultrapasse limites críticos, a combinação de operações atípicas, diversidade de canais e volume relativamente alto justifica um nível de risco médio."
+      "justificativa": "O cliente CLI-028 realizou 12 operações com volume total de R$ 88.750,80, incluindo 4 transferências enviadas, 3 depósitos, 3 pagamentos, 1 saque e 1 transferência recebida. Os canais utilizados foram PIX (2), cartão (4), TED (5) e boleto (1), com 41,67% de TED, indicando diversificação de canais. As operações atípicas OP-00308 e OP-00307 foram detectadas. Esses elementos sugerem um perfil de risco médio."
     },
     "fallback_parse": false,
+    "status": "ok",
+    "campos_reparados": [],
+    "tentativas": 1,
+    "erro": null,
     "metricas": {
       "provedor": "groq",
       "modelo": "openai/gpt-oss-20b",
-      "latencia_s": 1.813,
+      "latencia_s": 1.619,
       "tokens_prompt": 530,
-      "tokens_resposta": 535,
-      "tokens_total": 1065
+      "tokens_resposta": 730,
+      "tokens_total": 1260
     }
   },
   {
@@ -125,22 +138,26 @@
     ],
     "parecer": {
       "nivel_risco": "médio",
-      "tipologia_suspeita": "Transferências e pagamentos com múltiplos canais",
+      "tipologia_suspeita": "transferência",
       "red_flags": [
-        "Operações atípicas identificadas",
-        "Volume significativo em poucas operações",
-        "Uso predominante de PIX e TED"
+        "ops atípicas",
+        "variedade de canais",
+        "volume significativo"
       ],
-      "justificativa": "O cliente realizou 10 operações com volume total de R$81.730,99, incluindo transferências enviadas, saques, depósitos, pagamento e transferência recebida. A maior operação foi de R$28.487,76, indicando transações de valor elevado. A distribuição de canais mostra 30% TED e 40% PIX, indicando preferência por transferências eletrônicas rápidas. A presença de operações atípicas (OP-00310, OP-00309) reforça a necessidade de monitoramento. Esses fatores combinados indicam risco médio."
+      "justificativa": "O cliente CLI-013 realizou 10 operações, com volume total de R$81.730,99 e presença de 2 transferências enviadas e 1 recebida. Há 3 TEDs, 4 PIXs, 1 cartão, 1 boleto e 1 espécie, indicando uso de múltiplos canais. Operações atípicas (OP-00310, OP-00309) foram identificadas. Esses fatores sugerem risco médio de lavagem de dinheiro."
     },
     "fallback_parse": false,
+    "status": "ok",
+    "campos_reparados": [],
+    "tentativas": 1,
+    "erro": null,
     "metricas": {
       "provedor": "groq",
       "modelo": "openai/gpt-oss-20b",
-      "latencia_s": 2.206,
+      "latencia_s": 1.655,
       "tokens_prompt": 548,
-      "tokens_resposta": 630,
-      "tokens_total": 1178
+      "tokens_resposta": 621,
+      "tokens_total": 1169
     }
   },
   {
@@ -161,23 +178,26 @@
     ],
     "parecer": {
       "nivel_risco": "médio",
-      "tipologia_suspeita": "transferências e pagamentos em canais digitais",
+      "tipologia_suspeita": "Transações de alto valor e múltiplos canais de pagamento",
       "red_flags": [
-        "operações atípicas OP-00049 e OP-00043",
-        "alta proporção de TED e PIX (27% cada)",
-        "valor máximo de 30.743,97 BRL",
-        "volume total de 64.742,66 BRL em 11 operações"
+        "Transação única de 30.743,97 BRL",
+        "Operações atípicas identificadas (OP-00049, OP-00043)",
+        "Uso de múltiplos canais (TED, PIX, cartão, espécie)"
       ],
-      "justificativa": "O cliente realizou 11 operações, com volume total de 64.742,66 BRL, incluindo uma operação de 30.743,97 BRL. A distribuição de canais mostra 27% TED e 27% PIX, indicando uso frequente de transferências digitais. Além disso, foram identificadas operações atípicas (OP-00049, OP-00043). Esses elementos sugerem um risco médio de lavagem de dinheiro."
+      "justificativa": "O cliente CLI-005 realizou 11 operações no período analisado, totalizando R$64.742,66, com uma transação de R$30.743,97 que representa um valor significativo em relação ao volume total. A distribuição dos canais inclui TED, PIX, cartão e espécie, indicando diversidade de meios de pagamento. Além disso, foram identificadas operações atípicas (OP-00049 e OP-00043) que podem indicar comportamento fora do padrão. Esses elementos sugerem um risco médio de lavagem de dinheiro, exigindo monitoramento adicional."
     },
     "fallback_parse": false,
+    "status": "ok",
+    "campos_reparados": [],
+    "tentativas": 1,
+    "erro": null,
     "metricas": {
       "provedor": "groq",
       "modelo": "openai/gpt-oss-20b",
-      "latencia_s": 2.243,
+      "latencia_s": 1.746,
       "tokens_prompt": 548,
-      "tokens_resposta": 657,
-      "tokens_total": 1205
+      "tokens_resposta": 604,
+      "tokens_total": 1152
     }
   },
   {
@@ -198,21 +218,26 @@
     ],
     "parecer": {
       "nivel_risco": "médio",
-      "tipologia_suspeita": "Operações atípicas e alta concentração em espécie",
+      "tipologia_suspeita": "transferência enviada",
       "red_flags": [
-        "Operações atípicas identificadas (OP-00253, OP-00247)",
-        "Concentração de espécie em 41.67% das transações"
+        "operações atípicas identificadas (OP-00253, OP-00247)",
+        "alta proporção de espécie (41.67%)",
+        "volume total de R$54.729,28 em 12 operações"
       ],
-      "justificativa": "O cliente CLI-026 realizou 12 operações com volume total de R$54.729,28, onde 41,67% das transações foram em espécie, o que pode indicar tentativas de lavagem de dinheiro. Além disso, foram identificadas duas operações atípicas (OP-00253 e OP-00247) que não se enquadram nos padrões habituais de movimentação do cliente. Esses fatores combinados sugerem um risco médio de lavagem de dinheiro."
+      "justificativa": "O cliente CLI-026 realizou 12 operações com volume total de R$54.729,28, predominando transferências enviadas (3) e saques (2). A maior parte das transações (41,67%) ocorreu por meio de espécie, o que pode indicar tentativas de movimentação em espécie. Além disso, foram identificadas duas operações atípicas (OP-00253 e OP-00247). Esses elementos sugerem um risco moderado de lavagem de dinheiro, justificando a classificação de risco médio."
     },
     "fallback_parse": false,
+    "status": "ok",
+    "campos_reparados": [],
+    "tentativas": 1,
+    "erro": null,
     "metricas": {
       "provedor": "groq",
       "modelo": "openai/gpt-oss-20b",
-      "latencia_s": 1.789,
+      "latencia_s": 1.725,
       "tokens_prompt": 548,
-      "tokens_resposta": 482,
-      "tokens_total": 1030
+      "tokens_resposta": 643,
+      "tokens_total": 1191
     }
   },
   {
@@ -233,22 +258,26 @@
     ],
     "parecer": {
       "nivel_risco": "médio",
-      "tipologia_suspeita": "operações atípicas e volume elevado",
+      "tipologia_suspeita": "transações de alto valor e múltiplos canais",
       "red_flags": [
-        "operações atípicas",
-        "volume elevado",
-        "máximo valor alto"
+        "valor máximo de R$25.110,15 em transferência enviada",
+        "operações atípicas OP-00008 e OP-00006",
+        "mix de canais com 40% TED e 30% cartão"
       ],
-      "justificativa": "O cliente CLI-001 realizou 10 operações no total, com volume de R$47.947,81, sendo o maior valor de R$25.110,15. A distribuição de canais mostra 40% TED, 30% cartão, 10% boleto e 10% pix, indicando uso diversificado. As operações atípicas OP-00008 e OP-00006 foram identificadas. Esses fatores indicam risco médio."
+      "justificativa": "O cliente realizou 10 operações com volume total de R$47.947,81, incluindo uma transferência enviada de R$25.110,15, que representa um valor significativo. A distribuição de canais mostra 40% TED e 30% cartão, indicando uso de múltiplos meios. Além disso, foram identificadas operações atípicas (OP-00008, OP-00006). Esses fatores combinados geram um risco médio."
     },
     "fallback_parse": false,
+    "status": "ok",
+    "campos_reparados": [],
+    "tentativas": 1,
+    "erro": null,
     "metricas": {
       "provedor": "groq",
       "modelo": "openai/gpt-oss-20b",
-      "latencia_s": 2.429,
+      "latencia_s": 2.102,
       "tokens_prompt": 538,
-      "tokens_resposta": 601,
-      "tokens_total": 1139
+      "tokens_resposta": 944,
+      "tokens_total": 1482
     }
   },
   {
@@ -259,25 +288,35 @@
     "volume_brl": 191385.77,
     "ferramentas_usadas": [
       {
+        "nome": "historico_cliente",
+        "cliente_id": "CLI-029"
+      },
+      {
         "nome": "operacoes_do_dia",
         "cliente_id": "CLI-029",
         "data": "2026-05-26"
       }
     ],
     "parecer": {
-      "nivel_risco": "baixo",
-      "tipologia_suspeita": "normal",
-      "red_flags": [],
-      "justificativa": "Todas as operações do cliente CLI-029 no dia 2026-05-26 foram realizadas via canais TED e PIX, com valores dentro de faixas típicas de movimentação bancária. Não há indícios de fraudes, lavagem de dinheiro ou outras atividades ilícitas. As operações não excedem limites de valor ou frequência que caracterizem risco elevado, e não há observações ou notas que sugiram irregularidades. Portanto, o nível de risco é classificado como baixo e a tipologia suspeita como normal."
+      "nivel_risco": "médio",
+      "tipologia_suspeita": "transações de alto valor em curto prazo",
+      "red_flags": [
+        "saque e depósito de valores semelhantes no mesmo dia"
+      ],
+      "justificativa": "O cliente realizou, em 26/05/2026, um saque de R$19.418,96 e um depósito de R$19.138,59, além de outras transações de valor considerável (R$14.326,29 e R$18.413,84). A ocorrência de valores próximos em operações de saque e depósito no mesmo dia pode indicar tentativa de mascarar origem de recursos ou movimentação de fundos de forma rápida, caracterizando um padrão de risco médio. O histórico do cliente mostra 16 operações com volume total de R$191.385,77, o que reforça a relevância das transações recentes. Sem evidências adicionais de limites ou comparações, a avaliação permanece em risco médio. "
     },
     "fallback_parse": false,
+    "status": "ok",
+    "campos_reparados": [],
+    "tentativas": 1,
+    "erro": null,
     "metricas": {
       "provedor": "groq",
       "modelo": "openai/gpt-oss-20b",
-      "latencia_s": 1.828,
-      "tokens_prompt": 670,
-      "tokens_resposta": 302,
-      "tokens_total": 972
+      "latencia_s": 5.466,
+      "tokens_prompt": 819,
+      "tokens_resposta": 455,
+      "tokens_total": 1274
     }
   },
   {
@@ -288,27 +327,35 @@
     "volume_brl": 121391.37,
     "ferramentas_usadas": [
       {
+        "nome": "historico_cliente",
+        "cliente_id": "CLI-017"
+      },
+      {
         "nome": "operacoes_do_dia",
         "cliente_id": "CLI-017",
         "data": "2026-03-08"
       }
     ],
     "parecer": {
-      "nivel_risco": "médio",
-      "tipologia_suspeita": "indeterminada",
+      "nivel_risco": "alto",
+      "tipologia_suspeita": "transações de alto valor",
       "red_flags": [
-        "resposta da LLM malformada ou indisponível"
+        "operacoes de alto valor em dia único"
       ],
-      "justificativa": "Fallback (ValidationError): {\"nivel_risco\":\"alto\",\"tipologia_suspeita\":\"Operações de alto valor em curto prazo e múltiplos canais\",\"red_flags\":[\"Quatro transações de valor superior a 10.000 BRL em um único dia\",\"Transação de saque via TED e depósito via TED no mesmo dia\",\"Transferência enviada via PIX e pagamento via PIX no mesmo dia\",\"Diversas contrapartes distintas em operações de alto valor\"]}"
+      "justificativa": "O cliente CLI-017 realizou quatro operações no dia 2026-03-08, cada uma com valor superior a R$15.000,00, incluindo um depósito de R$18.761,22, um pagamento de R$16.158,41 e uma transferência enviada de R$15.401,27. Essas transações de valor elevado em um único dia, sem evidências de justificativa documental ou padrão de comportamento habitual, configuram um risco elevado de lavagem de dinheiro. O histórico do cliente mostra 13 operações no total, mas a concentração de valores altos em um único dia aumenta a suspeita. Portanto, o nível de risco é classificado como alto."
     },
-    "fallback_parse": true,
+    "fallback_parse": false,
+    "status": "ok",
+    "campos_reparados": [],
+    "tentativas": 1,
+    "erro": null,
     "metricas": {
       "provedor": "groq",
       "modelo": "openai/gpt-oss-20b",
-      "latencia_s": 1.757,
-      "tokens_prompt": 669,
-      "tokens_resposta": 291,
-      "tokens_total": 960
+      "latencia_s": 12.757,
+      "tokens_prompt": 819,
+      "tokens_resposta": 418,
+      "tokens_total": 1237
     }
   },
   {
@@ -328,21 +375,27 @@
       }
     ],
     "parecer": {
-      "nivel_risco": "baixo",
-      "tipologia_suspeita": "transferências e depósitos comuns",
+      "nivel_risco": "médio",
+      "tipologia_suspeita": "Operação atípica e uso de múltiplos canais",
       "red_flags": [
-        "OP-00313"
+        "Operação atípica OP-00313",
+        "Uso de múltiplos canais (TED, PIX, Boleto, Cartão, Espécie)",
+        "Volume de transações relativamente alto (117.780,89 BRL)"
       ],
-      "justificativa": "O cliente possui 9 operações com volume total de R$117.780,89, distribuídas entre transferências recebidas, pagamentos, transferências enviadas, saques e depósitos. A composição de canais (TED, PIX, boleto, cartão, espécie) está equilibrada, sem concentração em um único canal. Não há evidências de operações de alto valor ou de volume anormal. A única operação atípica identificada (OP-00313) não indica padrão de lavagem. Assim, o risco é considerado baixo."
+      "justificativa": "O cliente realizou 9 operações com volume total de 117.780,89 BRL, distribuídas entre transferência recebida, pagamento, transferência enviada, saque e depósito. A presença de uma operação atípica (OP-00313) e a utilização de diversos canais (TED, PIX, Boleto, Cartão, Espécie) indicam comportamento não padrão. Embora o volume não ultrapasse limites típicos de alto risco, a combinação de fatores sugere risco médio."
     },
     "fallback_parse": false,
+    "status": "ok",
+    "campos_reparados": [],
+    "tentativas": 1,
+    "erro": null,
     "metricas": {
       "provedor": "groq",
       "modelo": "openai/gpt-oss-20b",
-      "latencia_s": 7.33,
+      "latencia_s": 4.776,
       "tokens_prompt": 543,
-      "tokens_resposta": 573,
-      "tokens_total": 1116
+      "tokens_resposta": 728,
+      "tokens_total": 1271
     }
   }
 ]

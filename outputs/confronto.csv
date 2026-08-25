@@ -1,11 +1,11 @@
 cliente_id,n_sinalizacoes,n_janelas_fracionamento,n_ops_atipicas,risco_esperado,risco_esperado_criterio_enunciado,risco_agente,concordante,fallback_parse,status,leitura_divergencia
-CLI-014,3,0,3,médio,médio,alto,False,False,ok,"CLI-014: só há flag de valor atípico (5× mediana), sem janela de fracionamento. O agente endureceu para alto. Pode ser razoável se o parecer cita volume e canais, mas a regra sozinha não justificava 'alto' no nosso critério — típico de FP da mediana."
+CLI-014,3,0,3,médio,médio,médio,True,False,ok,concordante
 CLI-023,2,0,2,médio,médio,médio,True,False,ok,concordante
 CLI-028,2,0,2,médio,médio,médio,True,False,ok,concordante
 CLI-013,2,0,2,médio,médio,médio,True,False,ok,concordante
 CLI-005,2,0,2,médio,médio,médio,True,False,ok,concordante
 CLI-026,2,0,2,médio,médio,médio,True,False,ok,concordante
 CLI-001,2,0,2,médio,médio,médio,True,False,ok,concordante
-CLI-029,1,1,0,alto,médio,baixo,False,False,ok,CLI-029: a regra marcou fracionamento e o agente baixou o risco. Aqui a regra tende a estar mais certa — smurfing é exatamente o que ela captura. O modelo pode ter lido só o recorte do dia como 'rotina' e subestimado o padrão.
-CLI-017,1,1,0,alto,médio,médio,False,True,ok,"CLI-017: o JSON do agente falhou o contrato. A discordância não é julgamento de PLD — é falha de formato, e a regra permanece a única âncora confiável neste caso."
-CLI-030,1,0,1,médio,médio,baixo,False,False,ok,"CLI-030: a regra 2 acusou outlier e o agente suavizou. Se o parecer descreve operação pontual sem estruturação, o agente está ponderando o falso positivo da mediana; se ignora o outlier, o modelo é que ficou frouxo."
+CLI-029,1,1,0,alto,médio,médio,False,False,ok,"CLI-029: esperado alto, agente médio. Revisar o parecer: a regra é burra de propósito; o modelo só ganha se a justificativa usar evidência das ferramentas, não se só inverter o rótulo."
+CLI-017,1,1,0,alto,médio,alto,True,False,ok,concordante
+CLI-030,1,0,1,médio,médio,médio,True,False,ok,concordante
