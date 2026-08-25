@@ -30,8 +30,6 @@ MIN_OPS_ATIPICO = 4
 TOP_N = 10
 
 NivelRisco = Literal["baixo", "médio", "alto"]
-# Fora do contrato da LLM de propósito: só o pipeline emite este rótulo, quando não há parecer.
-RISCO_INDETERMINADO = "indeterminado"
 DIR_RAIZ = Path(__file__).resolve().parent.parent
 DIR_OUTPUTS = DIR_RAIZ / "outputs"
 
@@ -325,8 +323,9 @@ def registro_de_falha(
 ) -> dict[str, Any]:
     """Registro seguro para cliente que não pôde ser avaliado.
 
-    Não atribui nível de risco: um cliente sem parecer entra na fila de revisão
-    humana, e não como `médio` — que passaria por avaliação concluída no confronto.
+    `parecer` fica nulo em vez de receber um nível de risco: o contrato do
+    enunciado (baixo/médio/alto) vale para pareceres de verdade, e cliente sem
+    parecer vai para revisão humana em vez de entrar como avaliado no confronto.
     """
     try:
         ferramentas = [{"nome": nome, **kwargs} for nome, kwargs in decidir_ferramentas(sinal)]
@@ -340,16 +339,7 @@ def registro_de_falha(
         "n_ops_atipicas": sinal.n_ops_atipicas,
         "volume_brl": sinal.volume_brl,
         "ferramentas_usadas": ferramentas,
-        "parecer": {
-            "nivel_risco": RISCO_INDETERMINADO,
-            "tipologia_suspeita": "indeterminada",
-            "red_flags": [f"análise não concluída ({type(erro).__name__})"],
-            "justificativa": (
-                f"Cliente não avaliado pelo agente — {detalhe}. "
-                "As flags determinísticas permanecem válidas; requer reprocessamento "
-                "ou revisão humana."
-            ),
-        },
+        "parecer": None,
         "fallback_parse": True,
         "status": "erro",
         "erro": detalhe,
@@ -385,7 +375,7 @@ def executar_lote(n: int = TOP_N) -> pd.DataFrame:
 
     linhas = []
     for item in registros:
-        parecer = item["parecer"]
+        parecer = item["parecer"] or {}
         metricas = item["metricas"]
         nomes = sorted({f["nome"] for f in item["ferramentas_usadas"]})
         linhas.append(
@@ -396,8 +386,8 @@ def executar_lote(n: int = TOP_N) -> pd.DataFrame:
                 "n_ops_atipicas": item["n_ops_atipicas"],
                 "volume_brl": item["volume_brl"],
                 "ferramentas": ",".join(nomes),
-                "nivel_risco": parecer["nivel_risco"],
-                "tipologia_suspeita": parecer["tipologia_suspeita"],
+                "nivel_risco": parecer.get("nivel_risco", ""),
+                "tipologia_suspeita": parecer.get("tipologia_suspeita", ""),
                 "fallback_parse": item["fallback_parse"],
                 "status": item.get("status", "ok"),
                 "provedor": metricas.get("provedor"),

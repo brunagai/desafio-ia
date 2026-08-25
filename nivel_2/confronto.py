@@ -87,13 +87,25 @@ def _avaliar_divergencia(linha: dict[str, Any]) -> str:
 def confrontar(lote: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     registros = lote if lote is not None else _carregar_lote()
     linhas: list[dict[str, Any]] = []
+    nao_avaliados: list[dict[str, Any]] = []
     for item in registros:
-        parecer = item.get("parecer") or {}
+        parecer = item.get("parecer")
         esperado = risco_esperado_pela_regra(
             int(item.get("n_janelas_fracionamento") or 0),
             int(item.get("n_ops_atipicas") or 0),
         )
-        obtido = str(parecer.get("nivel_risco") or "médio")
+        if not parecer or not parecer.get("nivel_risco"):
+            # Sem parecer não há o que confrontar: entra como não avaliado, e não
+            # como divergência ou acerto — senão a taxa mede falha de execução.
+            nao_avaliados.append(
+                {
+                    "cliente_id": item["cliente_id"],
+                    "risco_esperado": esperado,
+                    "motivo": item.get("erro") or "cliente sem parecer estruturado",
+                }
+            )
+            continue
+        obtido = str(parecer.get("nivel_risco"))
         linha = {
             "cliente_id": item["cliente_id"],
             "n_sinalizacoes": item.get("n_sinalizacoes"),
@@ -120,14 +132,18 @@ def confrontar(lote: list[dict[str, Any]] | None = None) -> dict[str, Any]:
             "alto se (fracionamento e atípico); médio se só uma das famílias; "
             "concordância = risco_agente == risco_esperado"
         ),
-        "n_clientes": n,
+        "n_clientes": n + len(nao_avaliados),
+        "n_avaliados": n,
+        "n_nao_avaliados": len(nao_avaliados),
         "n_concordantes": n_ok,
         "n_divergentes": len(divergencias),
         "taxa_concordancia": taxa,
         "linhas": linhas,
         "divergencias": divergencias,
+        "nao_avaliados": nao_avaliados,
         "sintese": (
-            f"Concordância {n_ok}/{n} ({taxa:.0%}). "
+            f"Concordância {n_ok}/{n} ({taxa:.0%})"
+            f"{f'; {len(nao_avaliados)} cliente(s) sem parecer ficaram fora da conta' if nao_avaliados else ''}. "
             "Divergência é o ponto do exercício: a mediana e o corte de 50 mil são toscos; "
             "um agente que discorda com evidência das ferramentas pode estar certo."
         ),
@@ -182,6 +198,11 @@ def main() -> dict[str, Any]:
         print("  nenhuma")
     for item in relatorio["divergencias"]:
         print(f"- {item['leitura_divergencia']}")
+    if relatorio["nao_avaliados"]:
+        print()
+        print("Sem parecer (fora da taxa, para revisão humana):")
+        for item in relatorio["nao_avaliados"]:
+            print(f"- {item['cliente_id']}: {item['motivo']}")
     print()
     print(f"Salvo em {CAMINHO_RELATORIO} e {CAMINHO_TABELA}")
     return relatorio
