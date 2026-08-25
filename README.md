@@ -5,7 +5,7 @@ Triagem de operações fictícias: regras determinísticas (cálculo) e LLM (par
 ## O que foi concluído
 
 - **Nível 1:** limpeza, agregações, duas regras, validação da Regra 1, dois prompts, JSON validado, tokens e latência. Notebook com saídas em `nivel_1/nivel_1.ipynb`.
-- **Nível 2:** regras na base maior, top 10, ferramentas, agente (escolha dinâmica), lote e confronto. Resultados em `outputs/`.
+- **Nível 2:** regras na base maior, top 10, ferramentas, agente, lote e confronto. Resultados em `outputs/`. A seleção de ferramentas é **determinística** (regra em Python sobre as flags), **não** *tool calling* do modelo — o trade-off está em `docs/DECISOES.md`.
 - **Nível 3:** não feito; plano em `docs/DECISOES.md`.
 
 Detalhe da autodeclaração: `ENTREGA.yaml`. Uso de IA: `docs/USO_DE_IA.md`.

@@ -4,7 +4,7 @@ provedor: groq
 horas_dedicadas: 8
 
 nivel_1:
-  limpeza_dados:      {status: completo, onde: "nivel_1/nivel_1.ipynb, células 4–10"}
+  limpeza_dados:      {status: completo, onde: "nivel_1/nivel_1.ipynb, células 2–10 (funções de carga e contrato na 2)"}
   regras_pandas:      {status: completo, onde: "nivel_1/nivel_1.ipynb, célula 16"}
   validacao_regras:   {status: completo, onde: "nivel_1/nivel_1.ipynb, células 17–18"}
   saida_estruturada:  {status: completo, onde: "nivel_1/nivel_1.ipynb, célula 24"}

@@ -61,6 +61,23 @@ Passaram a existir três estados de parse: `ok`, `reparado` (nível de risco vá
 
 O `outputs/lote.json` do repositório tinha sido gerado antes da correção de roteamento da seção 2, então as ferramentas registradas nele não correspondiam ao que o código faria se rodasse. Nenhum teste pega isso, e um avaliador que rodasse o projeto veria resultado diferente do commitado. O lote foi regerado com credencial válida — 10 de 10 clientes, sem erro e sem reparo de parse — e os artefatos voltaram a ser reprodutíveis (commit `9d290d4`).
 
+## Segunda rodada de auditoria — e o que ela achou de errado nos meus próprios documentos
+
+Repeti o exercício da seção 4 depois de o repositório estar fechado, com a mesma instrução de ser impiedoso, mas mirando um alvo diferente: **onde a documentação afirma algo que o código não sustenta.** É o ponto mais fácil de errar de boa-fé, porque o texto envelhece junto com o código e ninguém relê o parágrafo antigo.
+
+Achou seis coisas, e nenhuma delas era falha de execução:
+
+1. **O `README.md` dizia “escolha dinâmica”** para o agente, enquanto `DECISOES.md` e este documento explicam que a seleção de ferramentas é determinística. O README é o primeiro arquivo que qualquer avaliador abre — a contradição sugeria que a honestidade dos documentos internos tinha sido escrita depois, para cobrir a lacuna. Corrigido.
+2. **`DECISOES.md` afirmava que “o nível de risco nunca é remendado pelo pipeline”.** Falso como afirmação geral: sem credencial, `chamar_llm` fabrica `nivel_risco: "médio"` e o registro entra como `status: "ok"`; e o `except` da célula 24 do Nível 1 faz o mesmo. Ou seja, o defeito que eu identifiquei, documentei e corrigi no `CLI-017` continuava vivo em dois outros pontos. A frase foi restringida ao caminho de parse, que é onde a garantia realmente vale, e as duas rotas abertas foram para “Furos conhecidos”.
+3. **A taxa de 90% estava apresentada como vitória sobre o piso de 80%.** É verdade e é irrelevante: com n=10 isso é um cliente de diferença, o agente respondeu “médio” em 9 das 10 linhas e acerta 1 de 2 nas únicas linhas em que o critério discrimina. Eu tinha construído o instrumento certo para detectar métrica degenerada e não o apliquei ao meu próprio resultado. A ressalva estatística entrou no documento.
+4. **Eu reconhecia o viés do `n_sinalizacoes` sem medir a consequência.** A base tem 4 clientes com janela de fracionamento e o lote analisa 2: `CLI-002` e `CLI-003` ficam fora do top 10. Tratar fracionamento como alto no confronto corrige o rótulo de quem entrou, não recupera quem nunca entrou. Reconhecer um viés e não quantificá-lo é meio caminho — o número entrou.
+5. **`DECISOES.md` citava um `docs/ARQUITETURA.md` que não existe.** Referência removida.
+6. **`ENTREGA.yaml` apontava a limpeza nas “células 4–10”**, mas todas as funções de carga, parsing e validação de contrato estão na célula 2. Intervalo corrigido.
+
+Além dessas, a auditoria confirmou por recálculo independente o que os documentos afirmam: as regras do Nível 1, a normalização de `OP-0013`, o top 10 e as ferramentas por cliente reproduzem exatamente os `outputs/` commitados, os seis commits citados aqui existem e correspondem, e não há credencial em nenhum objeto do histórico git.
+
+**Por que os furos ficaram abertos.** Corrigir o código dos itens 2 e 3 exige rerodar o lote para não deixar `outputs/` descrevendo um comportamento que o código não tem mais — que é exatamente o incidente da seção “Os outputs commitados não vinham do código commitado”. Sem tempo para reexecutar e reconferir, a escolha foi **declarar o furo em vez de mascará-lo**. Um documento que promete uma garantia que o código não dá é pior que um documento que aponta onde a garantia falha.
+
 ## Divisão de trabalho e limites
 
 O critério que apliquei o tempo todo: **a IA digita, o humano decide.** Toda decisão com consequência de compliance — imputar ou não uma data, o que fazer com um parecer fora do contrato, qual critério de confronto é honesto, se um resultado ruim entra no relatório — foi tomada por mim e registrada em `docs/DECISOES.md` com o trade-off explícito. O assistente escreveu a maior parte do código sob essas instruções e foi mais útil ainda como revisor adversarial do que como gerador.
