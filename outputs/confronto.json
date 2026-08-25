@@ -7,6 +7,22 @@
   "n_concordantes": 9,
   "n_divergentes": 1,
   "taxa_concordancia": 0.9,
+  "direcao_das_divergencias": {
+    "n_endureceu": 0,
+    "n_afrouxou": 1,
+    "n_igual": 9,
+    "n_indeterminada": 0,
+    "leitura": "Endurecer custa fila de análise; afrouxar deixa passar. Em PLD os dois erros não têm o mesmo preço, então a contagem por direção diz mais do que a taxa de concordância."
+  },
+  "dicionario_de_campos": {
+    "risco_esperado": "risco derivado das regras determinísticas pelo critério principal (tipologia)",
+    "risco_esperado_criterio_enunciado": "mesmo cálculo pelo critério do enunciado, mantido como análise de sensibilidade",
+    "direcao_vs_regra": "posição do parecer do agente frente à regra: 'endureceu' quando ele atribui risco acima do esperado, 'afrouxou' quando atribui abaixo, 'igual' quando bate",
+    "distancia_niveis": "distância em degraus na escala baixo(0) < médio(1) < alto(2); positiva no endurecimento, negativa no afrouxamento, zero na concordância",
+    "leitura_divergencia": "leitura em texto do caso, dizendo de quem é o ônus da prova; 'concordante' quando não há divergência",
+    "baseline_rotulo": "rótulo que um agente constante usaria (a classe majoritária entre os esperados)",
+    "baseline_acerta": "se esse agente constante acertaria esta linha; a média da coluna reproduz a taxa do baseline"
+  },
   "sensibilidade_ao_criterio": {
     "tipologia": {
       "taxa": 0.9,
@@ -36,11 +52,15 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": true,
+      "direcao_vs_regra": "igual",
+      "distancia_niveis": 0,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "Operações atípicas e diversificação de canais",
       "justificativa_agente": "O cliente CLI-014 apresenta 11 operações com volume total de R$80.629,99, incluindo 3 operações de pagamento, 3 de transferência recebida, 1 de transferência enviada, 3 saques e 1 depósito. Há 3 operações atípicas identificadas (OP-00133, OP-00129, OP-00315). A distribuição de canais mostra uso equilibrado de pix e TED (36,36% cada), boleto (18,18%) e cartão (9,09%). Esses elementos indicam um padrão de transações diversificado e a presença de operações atípicas, sugerindo risco médio de lavagem de dinheiro ou financiamento do terrorismo. ",
-      "leitura_divergencia": "concordante"
+      "leitura_divergencia": "concordante",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": true
     },
     {
       "cliente_id": "CLI-023",
@@ -52,11 +72,15 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": true,
+      "direcao_vs_regra": "igual",
+      "distancia_niveis": 0,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "transferência e pagamento de alto valor",
       "justificativa_agente": "O cliente CLI-023 realizou 12 operações com volume total de R$148.535,02, incluindo uma operação de R$65.417,17. Há presença de operações atípicas identificadas (OP-00219, OP-00317) e uso de múltiplos canais (TED, boleto, cartão). Esses elementos sugerem potencial atividade suspeita, mas não ultrapassam limites de alerta automático. Portanto, risco médio.",
-      "leitura_divergencia": "concordante"
+      "leitura_divergencia": "concordante",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": true
     },
     {
       "cliente_id": "CLI-028",
@@ -68,11 +92,15 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": true,
+      "direcao_vs_regra": "igual",
+      "distancia_niveis": 0,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "Operações atípicas e uso de múltiplos canais de pagamento",
       "justificativa_agente": "O cliente CLI-028 realizou 12 operações com volume total de R$ 88.750,80, incluindo 4 transferências enviadas, 3 depósitos, 3 pagamentos, 1 saque e 1 transferência recebida. Os canais utilizados foram PIX (2), cartão (4), TED (5) e boleto (1), com 41,67% de TED, indicando diversificação de canais. As operações atípicas OP-00308 e OP-00307 foram detectadas. Esses elementos sugerem um perfil de risco médio.",
-      "leitura_divergencia": "concordante"
+      "leitura_divergencia": "concordante",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": true
     },
     {
       "cliente_id": "CLI-013",
@@ -84,11 +112,15 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": true,
+      "direcao_vs_regra": "igual",
+      "distancia_niveis": 0,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "transferência",
       "justificativa_agente": "O cliente CLI-013 realizou 10 operações, com volume total de R$81.730,99 e presença de 2 transferências enviadas e 1 recebida. Há 3 TEDs, 4 PIXs, 1 cartão, 1 boleto e 1 espécie, indicando uso de múltiplos canais. Operações atípicas (OP-00310, OP-00309) foram identificadas. Esses fatores sugerem risco médio de lavagem de dinheiro.",
-      "leitura_divergencia": "concordante"
+      "leitura_divergencia": "concordante",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": true
     },
     {
       "cliente_id": "CLI-005",
@@ -100,11 +132,15 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": true,
+      "direcao_vs_regra": "igual",
+      "distancia_niveis": 0,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "Transações de alto valor e múltiplos canais de pagamento",
       "justificativa_agente": "O cliente CLI-005 realizou 11 operações no período analisado, totalizando R$64.742,66, com uma transação de R$30.743,97 que representa um valor significativo em relação ao volume total. A distribuição dos canais inclui TED, PIX, cartão e espécie, indicando diversidade de meios de pagamento. Além disso, foram identificadas operações atípicas (OP-00049 e OP-00043) que podem indicar comportamento fora do padrão. Esses elementos sugerem um risco médio de lavagem de dinheiro, exigindo monitoramento adicional.",
-      "leitura_divergencia": "concordante"
+      "leitura_divergencia": "concordante",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": true
     },
     {
       "cliente_id": "CLI-026",
@@ -116,11 +152,15 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": true,
+      "direcao_vs_regra": "igual",
+      "distancia_niveis": 0,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "transferência enviada",
       "justificativa_agente": "O cliente CLI-026 realizou 12 operações com volume total de R$54.729,28, predominando transferências enviadas (3) e saques (2). A maior parte das transações (41,67%) ocorreu por meio de espécie, o que pode indicar tentativas de movimentação em espécie. Além disso, foram identificadas duas operações atípicas (OP-00253 e OP-00247). Esses elementos sugerem um risco moderado de lavagem de dinheiro, justificando a classificação de risco médio.",
-      "leitura_divergencia": "concordante"
+      "leitura_divergencia": "concordante",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": true
     },
     {
       "cliente_id": "CLI-001",
@@ -132,11 +172,15 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": true,
+      "direcao_vs_regra": "igual",
+      "distancia_niveis": 0,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "transações de alto valor e múltiplos canais",
       "justificativa_agente": "O cliente realizou 10 operações com volume total de R$47.947,81, incluindo uma transferência enviada de R$25.110,15, que representa um valor significativo. A distribuição de canais mostra 40% TED e 30% cartão, indicando uso de múltiplos meios. Além disso, foram identificadas operações atípicas (OP-00008, OP-00006). Esses fatores combinados geram um risco médio.",
-      "leitura_divergencia": "concordante"
+      "leitura_divergencia": "concordante",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": true
     },
     {
       "cliente_id": "CLI-029",
@@ -148,11 +192,15 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": false,
+      "direcao_vs_regra": "afrouxou",
+      "distancia_niveis": -1,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "transações de alto valor em curto prazo",
       "justificativa_agente": "O cliente realizou, em 26/05/2026, um saque de R$19.418,96 e um depósito de R$19.138,59, além de outras transações de valor considerável (R$14.326,29 e R$18.413,84). A ocorrência de valores próximos em operações de saque e depósito no mesmo dia pode indicar tentativa de mascarar origem de recursos ou movimentação de fundos de forma rápida, caracterizando um padrão de risco médio. O histórico do cliente mostra 16 operações com volume total de R$191.385,77, o que reforça a relevância das transações recentes. Sem evidências adicionais de limites ou comparações, a avaliação permanece em risco médio. ",
-      "leitura_divergencia": "CLI-029: esperado alto, agente médio. Revisar o parecer: a regra é burra de propósito; o modelo só ganha se a justificativa usar evidência das ferramentas, não se só inverter o rótulo."
+      "leitura_divergencia": "CLI-029: afrouxou — a regra marcou janela de fracionamento (esperado alto) e o agente rebaixou um degrau, para médio. Smurfing é exatamente o que essa regra captura, então aqui o ônus da prova é do modelo: a queda só se sustenta se a justificativa mostrar, com histórico e operações do dia, que os valores logo abaixo do limite têm lastro de rotina. É o erro caro em PLD — afrouxar deixa passar.",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": false
     },
     {
       "cliente_id": "CLI-017",
@@ -164,11 +212,15 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "alto",
       "concordante": true,
+      "direcao_vs_regra": "igual",
+      "distancia_niveis": 0,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "transações de alto valor",
       "justificativa_agente": "O cliente CLI-017 realizou quatro operações no dia 2026-03-08, cada uma com valor superior a R$15.000,00, incluindo um depósito de R$18.761,22, um pagamento de R$16.158,41 e uma transferência enviada de R$15.401,27. Essas transações de valor elevado em um único dia, sem evidências de justificativa documental ou padrão de comportamento habitual, configuram um risco elevado de lavagem de dinheiro. O histórico do cliente mostra 13 operações no total, mas a concentração de valores altos em um único dia aumenta a suspeita. Portanto, o nível de risco é classificado como alto.",
-      "leitura_divergencia": "concordante"
+      "leitura_divergencia": "concordante",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": false
     },
     {
       "cliente_id": "CLI-030",
@@ -180,11 +232,15 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": true,
+      "direcao_vs_regra": "igual",
+      "distancia_niveis": 0,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "Operação atípica e uso de múltiplos canais",
       "justificativa_agente": "O cliente realizou 9 operações com volume total de 117.780,89 BRL, distribuídas entre transferência recebida, pagamento, transferência enviada, saque e depósito. A presença de uma operação atípica (OP-00313) e a utilização de diversos canais (TED, PIX, Boleto, Cartão, Espécie) indicam comportamento não padrão. Embora o volume não ultrapasse limites típicos de alto risco, a combinação de fatores sugere risco médio.",
-      "leitura_divergencia": "concordante"
+      "leitura_divergencia": "concordante",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": true
     }
   ],
   "divergencias": [
@@ -198,13 +254,17 @@
       "risco_esperado_criterio_enunciado": "médio",
       "risco_agente": "médio",
       "concordante": false,
+      "direcao_vs_regra": "afrouxou",
+      "distancia_niveis": -1,
       "fallback_parse": false,
       "status": "ok",
       "tipologia_suspeita": "transações de alto valor em curto prazo",
       "justificativa_agente": "O cliente realizou, em 26/05/2026, um saque de R$19.418,96 e um depósito de R$19.138,59, além de outras transações de valor considerável (R$14.326,29 e R$18.413,84). A ocorrência de valores próximos em operações de saque e depósito no mesmo dia pode indicar tentativa de mascarar origem de recursos ou movimentação de fundos de forma rápida, caracterizando um padrão de risco médio. O histórico do cliente mostra 16 operações com volume total de R$191.385,77, o que reforça a relevância das transações recentes. Sem evidências adicionais de limites ou comparações, a avaliação permanece em risco médio. ",
-      "leitura_divergencia": "CLI-029: esperado alto, agente médio. Revisar o parecer: a regra é burra de propósito; o modelo só ganha se a justificativa usar evidência das ferramentas, não se só inverter o rótulo."
+      "leitura_divergencia": "CLI-029: afrouxou — a regra marcou janela de fracionamento (esperado alto) e o agente rebaixou um degrau, para médio. Smurfing é exatamente o que essa regra captura, então aqui o ônus da prova é do modelo: a queda só se sustenta se a justificativa mostrar, com histórico e operações do dia, que os valores logo abaixo do limite têm lastro de rotina. É o erro caro em PLD — afrouxar deixa passar.",
+      "baseline_rotulo": "médio",
+      "baseline_acerta": false
     }
   ],
   "nao_avaliados": [],
-  "sintese": "Concordância 9/10 (90%) pelo critério de tipologia. Um agente que respondesse sempre 'médio' faria 80%, então a taxa sozinha não prova julgamento — a leitura das divergências é que vale. As regras são propositalmente pobres: um agente que discorda com evidência das ferramentas pode estar certo."
+  "sintese": "Concordância 9/10 (90%) pelo critério de tipologia. Um agente que respondesse sempre 'médio' faria 80%, então a taxa sozinha não prova julgamento — a leitura das divergências é que vale. Divergências por direção: 1 afrouxamento e 0 endurecimentos frente à regra. As regras são propositalmente pobres: um agente que discorda com evidência das ferramentas pode estar certo."
 }

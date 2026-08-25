@@ -1,11 +1,11 @@
-cliente_id,n_sinalizacoes,n_janelas_fracionamento,n_ops_atipicas,risco_esperado,risco_esperado_criterio_enunciado,risco_agente,concordante,fallback_parse,status,leitura_divergencia
-CLI-014,3,0,3,médio,médio,médio,True,False,ok,concordante
-CLI-023,2,0,2,médio,médio,médio,True,False,ok,concordante
-CLI-028,2,0,2,médio,médio,médio,True,False,ok,concordante
-CLI-013,2,0,2,médio,médio,médio,True,False,ok,concordante
-CLI-005,2,0,2,médio,médio,médio,True,False,ok,concordante
-CLI-026,2,0,2,médio,médio,médio,True,False,ok,concordante
-CLI-001,2,0,2,médio,médio,médio,True,False,ok,concordante
-CLI-029,1,1,0,alto,médio,médio,False,False,ok,"CLI-029: esperado alto, agente médio. Revisar o parecer: a regra é burra de propósito; o modelo só ganha se a justificativa usar evidência das ferramentas, não se só inverter o rótulo."
-CLI-017,1,1,0,alto,médio,alto,True,False,ok,concordante
-CLI-030,1,0,1,médio,médio,médio,True,False,ok,concordante
+cliente_id,n_sinalizacoes,n_janelas_fracionamento,n_ops_atipicas,risco_esperado,risco_esperado_criterio_enunciado,risco_agente,concordante,direcao_vs_regra,distancia_niveis,baseline_rotulo,baseline_acerta,fallback_parse,status,leitura_divergencia
+CLI-014,3,0,3,médio,médio,médio,True,igual,0,médio,True,False,ok,concordante
+CLI-023,2,0,2,médio,médio,médio,True,igual,0,médio,True,False,ok,concordante
+CLI-028,2,0,2,médio,médio,médio,True,igual,0,médio,True,False,ok,concordante
+CLI-013,2,0,2,médio,médio,médio,True,igual,0,médio,True,False,ok,concordante
+CLI-005,2,0,2,médio,médio,médio,True,igual,0,médio,True,False,ok,concordante
+CLI-026,2,0,2,médio,médio,médio,True,igual,0,médio,True,False,ok,concordante
+CLI-001,2,0,2,médio,médio,médio,True,igual,0,médio,True,False,ok,concordante
+CLI-029,1,1,0,alto,médio,médio,False,afrouxou,-1,médio,False,False,ok,"CLI-029: afrouxou — a regra marcou janela de fracionamento (esperado alto) e o agente rebaixou um degrau, para médio. Smurfing é exatamente o que essa regra captura, então aqui o ônus da prova é do modelo: a queda só se sustenta se a justificativa mostrar, com histórico e operações do dia, que os valores logo abaixo do limite têm lastro de rotina. É o erro caro em PLD — afrouxar deixa passar."
+CLI-017,1,1,0,alto,médio,alto,True,igual,0,médio,False,False,ok,concordante
+CLI-030,1,0,1,médio,médio,médio,True,igual,0,médio,True,False,ok,concordante
