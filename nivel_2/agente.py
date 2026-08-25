@@ -128,17 +128,21 @@ def top_clientes_sinalizados(n: int = TOP_N) -> list[SinalizacaoCliente]:
 
 
 def decidir_ferramentas(sinal: SinalizacaoCliente) -> list[tuple[str, dict[str, str]]]:
-    """Escolhe ferramentas pelo tipo de alerta — não dispara as três em todo mundo."""
-    chamadas: list[tuple[str, dict[str, str]]] = []
+    """Escolhe ferramentas pelo tipo de alerta — não dispara as três em todo mundo.
+
+    `historico_cliente` é sempre a linha de base: sem o comportamento habitual do
+    cliente não dá para dizer se o recorte é rotina ou desvio. As outras duas
+    seguem condicionais — fracionamento pede o recorte do dia, valor atípico pede
+    a distribuição por canal —, então cliente nenhum recebe as três por padrão.
+    """
+    chamadas: list[tuple[str, dict[str, str]]] = [
+        ("historico_cliente", {"cliente_id": sinal.cliente_id})
+    ]
     if sinal.n_janelas_fracionamento > 0:
         for dia in sinal.datas_fracionamento:
             chamadas.append(("operacoes_do_dia", {"cliente_id": sinal.cliente_id, "data": dia}))
     if sinal.n_ops_atipicas > 0:
         chamadas.append(("perfil_canal", {"cliente_id": sinal.cliente_id}))
-    if sinal.n_janelas_fracionamento == 0 or sinal.n_ops_atipicas > 0:
-        chamadas.insert(0, ("historico_cliente", {"cliente_id": sinal.cliente_id}))
-    if not chamadas:
-        chamadas.append(("historico_cliente", {"cliente_id": sinal.cliente_id}))
     return chamadas
 
 

@@ -8,7 +8,7 @@
 
 **Nível 2: replicar regras no `agente.py` em vez de um módulo compartilhado com o notebook.** Mais rápido para a entrega de 24 h; o custo é duplicação. Com mais tempo extrairia `regras.py` e o notebook só importaria — validaria rerodando o Nível 1 e conferindo os mesmos `CLI-A-1` / `OP-0013`.
 
-**Agente não chama as três ferramentas sempre.** Fracionamento → `operacoes_do_dia` da janela; atípico → `historico_cliente` + `perfil_canal`. Chamar tudo em todo cliente seria script, não agente.
+**Agente não chama as três ferramentas sempre.** `historico_cliente` é linha de base para todo cliente sinalizado — sem o comportamento habitual não dá para separar rotina de desvio. As outras duas são condicionais: fracionamento → `operacoes_do_dia` da janela; atípico → `perfil_canal`. Nenhum cliente recebe as três por padrão. A primeira versão poupava também o histórico no fracionamento, e o resultado apareceu no lote: `CLI-029` saiu como risco baixo vendo um único dia, sem volume nem perfil para comparar. Economizar a chamada custou a análise.
 
 **Gemini e Groq.** Duas chaves no `.env`, nunca no git. Gemini 403 nesta conta; Groq autenticou, mas `llama-3.1-8b-instant` não existe nela. A chamada que vale é `openai/gpt-oss-20b`.
 
