@@ -16,27 +16,50 @@ CAMINHO_TABELA = DIR_OUTPUTS / "confronto.csv"
 
 NivelRisco = Literal["baixo", "médio", "alto"]
 
-# Critério de correspondência (o enunciado pede um, justificado, não “o” único certo):
-# - As duas famílias de regra no mesmo cliente (janela de fracionamento E valor atípico)
-#   deveriam sair como risco alto: é o recorte mais grave que as regras simples conseguem
-#   marcar ao mesmo tempo.
-# - Só uma família → esperamos médio: o cliente está no top 10, mas a regra isolada
-#   (sobretudo 5× a mediana) gera falso positivo fácil em operação grande pontual.
-# Concordância = o parecer do agente iguala esse risco esperado.
-# Divergir não é automaticamente erro do modelo: regras propositalmente pobres.
+# Dois critérios de correspondência, reportados lado a lado.
+#
+# `enunciado` é o exemplo do próprio enunciado: sinalizado pelas duas regras → alto,
+# por uma só → médio. Nesta base ele não serve como métrica: nenhum cliente do top 10
+# dispara as duas famílias, então o risco esperado vira "médio" nas dez linhas e
+# responder sempre "médio" cravaria 100%. A taxa mediria a frequência de uma palavra.
+#
+# `tipologia` é o critério principal e olha para o que cada regra captura. Janela de
+# fracionamento é smurfing — estruturação deliberada para ficar abaixo do limite —,
+# e isso é alto por natureza da tipologia, não por acúmulo de flags. Valor atípico
+# isolado é médio: 5× a mediana gera falso positivo fácil em operação grande pontual.
+#
+# Concordância = o parecer do agente iguala o risco esperado. Divergir não é
+# automaticamente erro do modelo: as regras são propositalmente pobres.
+
+CriterioCorrespondencia = Literal["tipologia", "enunciado"]
+CRITERIO_PRINCIPAL: CriterioCorrespondencia = "tipologia"
 
 
 def risco_esperado_pela_regra(
     n_janelas_fracionamento: int,
     n_ops_atipicas: int,
+    criterio: CriterioCorrespondencia = CRITERIO_PRINCIPAL,
 ) -> NivelRisco:
     tem_fracionamento = n_janelas_fracionamento > 0
     tem_atipico = n_ops_atipicas > 0
-    if tem_fracionamento and tem_atipico:
-        return "alto"
-    if tem_fracionamento or tem_atipico:
-        return "médio"
-    return "baixo"
+    if not tem_fracionamento and not tem_atipico:
+        return "baixo"
+    if criterio == "enunciado":
+        return "alto" if (tem_fracionamento and tem_atipico) else "médio"
+    return "alto" if tem_fracionamento else "médio"
+
+
+def baseline_constante(esperados: list[str]) -> dict[str, Any]:
+    """Melhor taxa possível para um agente que responde sempre o mesmo rótulo.
+
+    Serve de piso de comparação: se a taxa do agente não supera este número, a
+    métrica está medindo distribuição de rótulo, não capacidade de julgamento.
+    """
+    if not esperados:
+        return {"rotulo": None, "taxa": 0.0}
+    contagem = {rotulo: esperados.count(rotulo) for rotulo in set(esperados)}
+    rotulo = max(contagem, key=lambda chave: contagem[chave])
+    return {"rotulo": rotulo, "taxa": round(contagem[rotulo] / len(esperados), 4)}
 
 
 def _carregar_lote(caminho: Path = CAMINHO_LOTE) -> list[dict[str, Any]]:
@@ -73,9 +96,15 @@ def _avaliar_divergencia(linha: dict[str, Any]) -> str:
             "o falso positivo da mediana; se ignora o outlier, o modelo é que ficou frouxo."
         )
     if linha["fallback_parse"]:
+        reparado = linha.get("status") == "reparado"
+        origem = (
+            "o parecer precisou de reparo de formato (campos de texto ausentes)"
+            if reparado
+            else "o JSON do agente falhou o contrato"
+        )
         return (
-            f"{cid}: JSON do agente falhou o contrato (fallback). A discordância não é julgamento "
-            "de PLD — é falha de formato. A regra permanece a única âncora confiável neste caso."
+            f"{cid}: {origem}. A discordância não é julgamento de PLD — é falha de formato, "
+            "e a regra permanece a única âncora confiável neste caso."
         )
     return (
         f"{cid}: esperado {esperado}, agente {obtido}. "
@@ -113,9 +142,15 @@ def confrontar(lote: list[dict[str, Any]] | None = None) -> dict[str, Any]:
             "n_ops_atipicas": item.get("n_ops_atipicas"),
             "volume_brl": item.get("volume_brl"),
             "risco_esperado": esperado,
+            "risco_esperado_criterio_enunciado": risco_esperado_pela_regra(
+                int(item.get("n_janelas_fracionamento") or 0),
+                int(item.get("n_ops_atipicas") or 0),
+                criterio="enunciado",
+            ),
             "risco_agente": obtido,
             "concordante": esperado == obtido,
             "fallback_parse": bool(item.get("fallback_parse")),
+            "status": item.get("status", "ok"),
             "tipologia_suspeita": parecer.get("tipologia_suspeita"),
             "justificativa_agente": parecer.get("justificativa"),
         }
@@ -127,10 +162,24 @@ def confrontar(lote: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     taxa = round(n_ok / n, 4) if n else 0.0
     divergencias = [linha for linha in linhas if not linha["concordante"]]
 
+    n_ok_enunciado = sum(
+        1
+        for linha in linhas
+        if linha["risco_esperado_criterio_enunciado"] == linha["risco_agente"]
+    )
+    piso = baseline_constante([linha["risco_esperado"] for linha in linhas])
+    piso_enunciado = baseline_constante(
+        [linha["risco_esperado_criterio_enunciado"] for linha in linhas]
+    )
+
     relatorio: dict[str, Any] = {
         "criterio": (
-            "alto se (fracionamento e atípico); médio se só uma das famílias; "
+            "principal (tipologia): alto se há janela de fracionamento (smurfing), "
+            "médio se só há valor atípico, baixo se nenhuma regra marcou; "
             "concordância = risco_agente == risco_esperado"
+        ),
+        "criterio_alternativo": (
+            "enunciado: alto só se as duas famílias marcam o mesmo cliente, médio se uma só"
         ),
         "n_clientes": n + len(nao_avaliados),
         "n_avaliados": n,
@@ -138,14 +187,28 @@ def confrontar(lote: list[dict[str, Any]] | None = None) -> dict[str, Any]:
         "n_concordantes": n_ok,
         "n_divergentes": len(divergencias),
         "taxa_concordancia": taxa,
+        "sensibilidade_ao_criterio": {
+            "tipologia": {
+                "taxa": taxa,
+                "baseline_constante": piso,
+                "supera_baseline": taxa > piso["taxa"],
+            },
+            "enunciado": {
+                "taxa": round(n_ok_enunciado / n, 4) if n else 0.0,
+                "baseline_constante": piso_enunciado,
+                "supera_baseline": (n_ok_enunciado / n if n else 0.0) > piso_enunciado["taxa"],
+            },
+        },
         "linhas": linhas,
         "divergencias": divergencias,
         "nao_avaliados": nao_avaliados,
         "sintese": (
-            f"Concordância {n_ok}/{n} ({taxa:.0%})"
+            f"Concordância {n_ok}/{n} ({taxa:.0%}) pelo critério de tipologia"
             f"{f'; {len(nao_avaliados)} cliente(s) sem parecer ficaram fora da conta' if nao_avaliados else ''}. "
-            "Divergência é o ponto do exercício: a mediana e o corte de 50 mil são toscos; "
-            "um agente que discorda com evidência das ferramentas pode estar certo."
+            f"Um agente que respondesse sempre '{piso['rotulo']}' faria {piso['taxa']:.0%}, "
+            "então a taxa sozinha não prova julgamento — a leitura das divergências é que vale. "
+            "As regras são propositalmente pobres: um agente que discorda com evidência das "
+            "ferramentas pode estar certo."
         ),
     }
     return relatorio
@@ -163,9 +226,11 @@ def salvar(relatorio: dict[str, Any]) -> None:
         "n_janelas_fracionamento",
         "n_ops_atipicas",
         "risco_esperado",
+        "risco_esperado_criterio_enunciado",
         "risco_agente",
         "concordante",
         "fallback_parse",
+        "status",
         "leitura_divergencia",
     ]
     pd.DataFrame(relatorio["linhas"])[colunas].to_csv(
@@ -177,7 +242,15 @@ def main() -> dict[str, Any]:
     relatorio = confrontar()
     salvar(relatorio)
     print(relatorio["sintese"])
-    print(f"Taxa de concordância: {relatorio['taxa_concordancia']:.0%}")
+    print()
+    print("Sensibilidade ao critério de correspondência:")
+    for nome, dados in relatorio["sensibilidade_ao_criterio"].items():
+        piso = dados["baseline_constante"]
+        veredito = "supera o piso" if dados["supera_baseline"] else "NÃO supera o piso"
+        print(
+            f"  {nome}: taxa {dados['taxa']:.0%} | responder sempre "
+            f"'{piso['rotulo']}' daria {piso['taxa']:.0%} → {veredito}"
+        )
     print()
     df = pd.DataFrame(relatorio["linhas"])
     print(
@@ -187,6 +260,7 @@ def main() -> dict[str, Any]:
                 "n_janelas_fracionamento",
                 "n_ops_atipicas",
                 "risco_esperado",
+                "risco_esperado_criterio_enunciado",
                 "risco_agente",
                 "concordante",
             ]
